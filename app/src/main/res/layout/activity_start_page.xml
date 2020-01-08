@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Start_page">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/main_image"
+        android:scaleType="centerCrop"
+        android:id="@+id/imageview"
+        android:alpha="0.8"
+        />
+
+    <TextView
+        android:id="@+id/foodsetgo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+        android:fontFamily="@font/mainfont"
+        android:gravity="center_horizontal"
+        android:text="Lets Taste It!"
+        android:textColor="#000000"
+        android:textSize="90sp"
+         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="480dp"
+        android:id="@+id/linear"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  I am a Customer  "
+            android:textSize="20sp"
+            android:fontFamily="@font/mainfont"
+            android:layout_gravity="center"
+            android:id="@+id/Customer"
+            android:textStyle="bold"
+            android:background="@drawable/mybutton"
+            android:textColor="@color/white"
+            android:alpha="0.75"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="  I am a Restaurant Owner  "
+            android:id="@+id/Owner"
+            android:textSize="20sp"
+            android:fontFamily="@font/mainfont"
+            android:layout_gravity="center"
+            android:background="@drawable/mybutton"
+            android:textColor="@color/white"
+            android:alpha="0.75"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

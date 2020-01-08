@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="Manage Account">
+    <menu>
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_person"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_chat"
+            android:icon="@drawable/ic_chat"
+            android:title="Food Items" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_email"
+            android:title="Orders" />
+    </menu>
+    </item>>
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_contacts_black_24dp"
+                android:title="About Us" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_directions_run_black_24dp"
+                android:title="Sign Out" />
+        </menu>
+    </item>
+
+</menu>
