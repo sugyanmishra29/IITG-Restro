@@ -34,6 +34,7 @@ public class Item {
         this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
         this.itemCategory = itemCategory;
+
     }
 
     public Item() {

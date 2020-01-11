@@ -65,12 +65,13 @@ public class itemEditor extends AppCompatActivity {
     private DatabaseReference mReference;
     private StorageReference mStorageReference;
     private FirebaseUser cuser;
+    private boolean alreadyimage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_editor);
-
+        alreadyimage=false;
         mCategorySpinner = findViewById(R.id.item_category_selector);
         itemNameEdit = findViewById(R.id.item_name_edit_view);
         itemPriceEdit = findViewById(R.id.item_price_edit_view);
@@ -88,11 +89,16 @@ public class itemEditor extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // open gallery to retrieve an image
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Log.i(TAG, "onClick: addpictureclicked");
+                /*Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
 
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                */
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
             }
         });
@@ -183,11 +189,15 @@ public class itemEditor extends AppCompatActivity {
                 break;
         }
         mCategorySpinner.setEnabled(false);
+        Log.i(TAG, "setFields: imageUrl: "+ItemInfo.imageUrl);
         if (!ItemInfo.imageUrl.isEmpty()) {
             mCategorySpinner.setEnabled(false);
             Glide.with(itemImageEdit.getContext())
                     .load(ItemInfo.imageUrl)
                     .into(itemImageEdit);
+            alreadyimage=true;
+           // selectedImageUri=Uri.parse(ItemInfo.imageUrl);
+
         }
     }
 
@@ -284,6 +294,7 @@ public class itemEditor extends AppCompatActivity {
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                             if (databaseError == null) {
                                 Toast.makeText(getApplicationContext(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                if(!alreadyimage)
                                 deleteImageFromStorage();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Error updating", Toast.LENGTH_SHORT).show();
@@ -327,7 +338,13 @@ public class itemEditor extends AppCompatActivity {
                             int i = Math.round(progress);
                             progressDialog.setProgress(i);
                         }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(itemEditor.this,"Error Uploading",Toast.LENGTH_SHORT).show();
+                        }
                     });
+
                 }
             } else {
                 //new item
@@ -380,7 +397,13 @@ public class itemEditor extends AppCompatActivity {
                             int i = Math.round(progress);
                             progressDialog.setProgress(i);
                         }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(itemEditor.this,"Error Uploading",Toast.LENGTH_SHORT).show();
+                        }
                     });
+
 
                 }
             }
@@ -393,7 +416,7 @@ public class itemEditor extends AppCompatActivity {
     private void deleteItem() {
         if (ApplicationMode.checkConnectivity(itemEditor.this)) {
             // only allow deletion if internet is connected, disallow cached writes
-            if (selectedImageUri == null) {
+            if (ItemInfo.imageUrl == null|| ItemInfo.imageUrl=="") {
                 mReference.child(ItemInfo.itemCategory).child(ItemInfo.itemId).removeValue(new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
@@ -439,6 +462,7 @@ public class itemEditor extends AppCompatActivity {
         itemImageEdit.setImageResource(R.drawable.no_image);
         ItemInfo.imageUrl = null;
         selectedImageUri = null;
+        alreadyimage=false;
     }
 
     private void deleteImageFromStorage() {
@@ -452,8 +476,11 @@ public class itemEditor extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, "onActivityResult: returned");
+        Log.i(TAG, "onActivityResult: requestcode: "+requestCode);
+        Log.i(TAG, "onActivityResult: resultcode: "+resultCode);
         if (requestCode == RC_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
             selectedImageUri = data.getData();
             Glide.with(itemImageEdit.getContext())
