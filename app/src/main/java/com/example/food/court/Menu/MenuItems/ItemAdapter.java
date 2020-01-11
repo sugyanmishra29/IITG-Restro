@@ -111,7 +111,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ItemAdapter.ViewHolder holder, int position) {
         Log.i(TAG, "onBindViewHolder: SHop"+position+":"+mItemList.get(position).getItemName());
-        Item item = mItemList.get(position);
+        final Item item = mItemList.get(position);
 
 
         String itid=(item.itemId);
@@ -125,6 +125,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             Glide.with(holder.itemImage.getContext())
                     .load(item.getImageUrl())
                     .into(holder.itemImage);
+            holder.imageUrl.setText(item.getImageUrl());
         } else {
             holder.itemImage.setImageResource(R.drawable.no_image);
         }
@@ -134,8 +135,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 if (ApplicationMode.currentMode.equals("owner") || ApplicationMode.currentMode.equals("visitor")) {
 
                     //allow owner to update item
+                    Log.i(TAG, "onClick: itemurl: "+item.getImageUrl());
+                    Log.i(TAG, "onClick: itemurl: "+holder.imageUrl.getText().toString());
                     Intent intent = new Intent(mcontext, itemEditor.class);
-                    intent.putExtra(mcontext.getString(R.string.imageUrl), holder.imageUrl.getText().toString());
+                    String imageurl;
+
+                    intent.putExtra(mcontext.getString(R.string.imageUrl),holder.imageUrl.getText().toString());
                     intent.putExtra(mcontext.getString(R.string.itemName), holder.itemName.getText().toString());
                     intent.putExtra(mcontext.getString(R.string.itemPrice), holder.itemPrice.getText().toString().split(" ")[0]); // separates the RS/- part
                     intent.putExtra(mcontext.getString(R.string.itemDescription), holder.itemDescription.getText().toString());

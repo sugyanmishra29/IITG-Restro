@@ -151,6 +151,7 @@ public class BurgerFragment extends Fragment {
                     //items.add(dataSnapshot1.getKey());
                     Item item = dataSnapshot1.getValue(Item.class);
                     item.itemId = dataSnapshot1.getKey();
+                   // Log.i(TAG, "onDataChange: itemUrl"+item.getImageUrl());
                     Log.i(TAG, "onDataChange:itemname "+item.getItemName());
                     Log.i(TAG, "onDataChange: itemid" +item.itemId);
                     items.add(item);
