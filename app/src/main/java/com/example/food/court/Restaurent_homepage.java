@@ -53,9 +53,12 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
                 Log.i(TAG, "onDataChange: shopname:"+shop.getShopName());
                 TextView shopname=findViewById(R.id.name);
                 TextView shopemail=findViewById(R.id.email);
-
-                shopname.setText(shop.getShopName());
-                shopemail.setText(shop.getShopEmail());
+                String name=shop.getShopName();
+                String email=shop.getShopEmail();
+                Log.i(TAG, "onDataChange: shopname: "+name);
+                Log.i(TAG, "onDataChange: shopemail: "+email);
+                shopname.setText(name);
+                shopemail.setText(email);
             }
 
             @Override

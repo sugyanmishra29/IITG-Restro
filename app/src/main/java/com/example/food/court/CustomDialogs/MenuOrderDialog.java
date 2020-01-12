@@ -2,6 +2,8 @@ package com.example.food.court.CustomDialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +18,9 @@ import android.widget.Toast;
 import com.example.food.court.Menu.MenuItems.ItemInfo;
 import com.example.food.court.Order.ShoppingCart.ShoppingCartItem;
 import com.example.food.court.R;
+import com.example.food.court.ShopList;
 import com.example.food.court.User.UserInfo;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,16 +35,31 @@ public class MenuOrderDialog extends Dialog implements android.view.View.OnClick
     private DatabaseReference mReference;
     private DatabaseReference.CompletionListener listener;
 
+    SharedPreferences pref; //sp-the name of shared preferences has to be the same in both the files
+    SharedPreferences.Editor editor;//editor-the name of the editor can be different in both the files
+    public static final String PREFS_NAME = "MyPrefsFile";
+
     private int mode;
     private int orderQuantity = 1;
     private String drinkType;
     private String crustType;
     private ShoppingCartItem item;
     private static final String TAG = "MenuOrderDialog";
-    public MenuOrderDialog(Activity a) {
+    private Context mcontext;
+    private String shopid;
+    public MenuOrderDialog(Activity a)
+    {
+        super(a);
+        this.c=a;
+    }
+   /* public MenuOrderDialog(Activity a,Context mcontext,String shopid) {
         super(a);
         this.c = a;
+        this.mcontext=mcontext;
+        this.shopid=shopid;
     }
+
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +132,12 @@ public class MenuOrderDialog extends Dialog implements android.view.View.OnClick
     @Override
     public void onClick(View v) {
         addToCart.setEnabled(false);
+
+       /* pref= mcontext.getSharedPreferences(PREFS_NAME,mcontext.MODE_PRIVATE);
+        editor=pref.edit();
+        editor.putString("USERID",shopid);
+
+        */
         addToCart.setBackgroundColor(c.getResources().getColor(R.color.grey));
         if (mode == 1) {
             getRadioButtonsState(drinkGroup);
