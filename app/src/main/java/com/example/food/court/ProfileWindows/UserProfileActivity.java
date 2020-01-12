@@ -96,7 +96,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         signOutButton.setEnabled(true);
                         deleteButton.setEnabled(true);
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Log.i(TAG, "user-reauthenticated");
                     }
                 });

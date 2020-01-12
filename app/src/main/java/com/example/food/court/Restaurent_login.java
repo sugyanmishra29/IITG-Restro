@@ -202,7 +202,7 @@ private  String TYPE="Type";
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    progressDialog.hide();
+                                                    progressDialog.dismiss();
                                                     Log.i(TAG, "User profile updated.");
                                                 }
                                             }
@@ -310,7 +310,7 @@ private  String TYPE="Type";
                                 final FirebaseUser user = mAuthentication.getCurrentUser();
                                 if (user.isEmailVerified()) {
                                     Shop.loadCurrentUser(user.getUid());
-                                    progressDialog.hide();
+                                    progressDialog.dismiss();
                                     FirebaseDatabase.getInstance().getReference().child("Restaurents").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -336,13 +336,13 @@ private  String TYPE="Type";
                                     });
 
                                 } else {
-                                    progressDialog.hide();
+                                    progressDialog.dismiss();
                                     Toast.makeText(getApplicationContext(), "Please verify email first", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {
                                 // If sign in fails, display a message to the user.
-                                progressDialog.hide();
+                                progressDialog.dismiss();
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 Toast.makeText(Restaurent_login.this, "Error signing in", Toast.LENGTH_SHORT).show();
                             }

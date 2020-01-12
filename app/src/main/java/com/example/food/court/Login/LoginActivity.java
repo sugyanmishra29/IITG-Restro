@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    progressDialog.hide();
+                                                    progressDialog.dismiss();
                                                     Log.i(TAG, "User profile updated.");
                                                 }
                                             }
@@ -317,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
                                             }
                                             else
                                             {
-                                                progressDialog.hide();
+                                                progressDialog.dismiss();
                                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                                 i.putExtra("USER_ID", user.getUid());
                                                 i.putExtra("USER",USER);
@@ -333,13 +333,13 @@ public class LoginActivity extends AppCompatActivity {
                                     });
 
                                 } else {
-                                    progressDialog.hide();
+                                    progressDialog.dismiss();
                                     Toast.makeText(getApplicationContext(), "Please verify email first", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {
                                 // If sign in fails, display a message to the user.
-                                progressDialog.hide();
+                                progressDialog.dismiss();
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 Toast.makeText(LoginActivity.this, "Error signing in", Toast.LENGTH_SHORT).show();
                             }

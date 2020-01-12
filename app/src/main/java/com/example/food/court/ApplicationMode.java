@@ -11,7 +11,7 @@ public final class ApplicationMode {
     public static String currentMode;
     public static String orderStatus;
     public static String ordersViewer;
-
+    public static String currentShop;
 
     public static boolean checkConnectivity(Activity a) {
         ConnectivityManager cm = (ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
