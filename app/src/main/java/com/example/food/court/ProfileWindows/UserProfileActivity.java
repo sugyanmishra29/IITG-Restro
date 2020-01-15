@@ -45,6 +45,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private static final int passwordUpdate = 3;
     private static final int phoneUpdate = 4;
     private static final int addressUpdate = 5;
+    private static final int upiIdUpdate = 6;
 
     private Button signOutButton;
     private Button deleteButton;
@@ -53,6 +54,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView passwordView;
     private TextView phoneView;
     private TextView addressView;
+    private TextView upiId;
     private ImageView photoView;
     private ProgressDialog progressDialog;
 
@@ -74,6 +76,7 @@ public class UserProfileActivity extends AppCompatActivity {
         passwordView = findViewById(R.id.user_password);
         phoneView = findViewById(R.id.user_number);
         addressView = findViewById(R.id.user_address);
+        upiId=findViewById(R.id.user_upiid);
 
         current_user = FirebaseAuth.getInstance().getCurrentUser();
         mReference = FirebaseDatabase.getInstance().getReference("Users/" + UserInfo.userID+"/Info");
@@ -83,6 +86,7 @@ public class UserProfileActivity extends AppCompatActivity {
         deleteButton.setEnabled(false);
         progressDialog = new ProgressDialog(UserProfileActivity.this);
         progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -135,6 +139,12 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dialogBuilder("Enter a new Address", null, UserInfo.userAddress, addressUpdate);
+            }
+        });
+        upiId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogBuilder("Enter new Upi Id", null, UserInfo.userUpiId, upiIdUpdate);
             }
         });
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -227,7 +237,12 @@ public class UserProfileActivity extends AppCompatActivity {
                             else
                                 Toast.makeText(getApplicationContext(), "Please Enter a new Address", Toast.LENGTH_SHORT).show();
                             break;
-
+                        case upiIdUpdate:
+                            if(!(string.isEmpty()))
+                                updateUpiId(string);
+                            else
+                                Toast.makeText(getApplicationContext(), "Please Enter a new Upi ID", Toast.LENGTH_SHORT).show();
+                            break;
 
                     }
                 }
@@ -265,6 +280,10 @@ public class UserProfileActivity extends AppCompatActivity {
     private void updateAddress(String newAddress) {
         // only database need updating
         updateUserDataInDatabase("userAddress", newAddress, "Address Changed");
+    }
+    private void updateUpiId(String newUpiId) {
+        // only database need updating
+        updateUserDataInDatabase("userUpiId", newUpiId, "Upi Id Changed");
     }
 
     private void updateEmail(final String newEmail) {
@@ -344,6 +363,7 @@ public class UserProfileActivity extends AppCompatActivity {
         UserInfo.setUserEmail(updatedUser.getUserEmail());
         UserInfo.setUserPhone(updatedUser.getUserPhone());
         UserInfo.setUserPassword(updatedUser.getUserPassword());
+        UserInfo.setUserUpiId(updatedUser.getUserUpiId());
     }
 
     private void updateUI() {
@@ -352,6 +372,7 @@ public class UserProfileActivity extends AppCompatActivity {
         passwordView.setText(UserInfo.userPassword);
         phoneView.setText(UserInfo.userPhone);
         addressView.setText(UserInfo.userAddress);
+        upiId.setText(UserInfo.userUpiId);
     }
 
 }

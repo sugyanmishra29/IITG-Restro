@@ -64,7 +64,7 @@ public class itemInfoWindow extends AppCompatActivity {
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MenuOrderDialog orderDialog = new MenuOrderDialog(itemInfoWindow.this);
+                MenuOrderDialog orderDialog = new MenuOrderDialog(itemInfoWindow.this,getApplicationContext());
                 orderDialog.show();
             }
         });

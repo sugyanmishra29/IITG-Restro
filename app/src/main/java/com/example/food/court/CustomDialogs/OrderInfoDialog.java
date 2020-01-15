@@ -3,6 +3,10 @@ package com.example.food.court.CustomDialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food.court.ApplicationMode;
+import com.example.food.court.Menu.MenuItems.DeclineOrder;
 import com.example.food.court.Menu.MenuItems.ItemAdapter;
 import com.example.food.court.Order.OrderItem.Order;
 import com.example.food.court.Order.OrderItem.OrdersAdapter;
@@ -27,6 +32,7 @@ import com.example.food.court.Order.ShoppingCart.ShoppingCartAdapter;
 import com.example.food.court.Order.ShoppingCart.ShoppingCartItem;
 import com.example.food.court.R;
 import com.example.food.court.User.User;
+import com.example.food.court.User.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -67,12 +73,17 @@ public class OrderInfoDialog extends Dialog {
     FirebaseUser cuser;
 
     String shopid;
-    public OrderInfoDialog(Activity a, String orderId, String userId,String shopid) {
+
+    String userName,userUpiId,note,totalprice;
+    final int UPI_PAYMENT = 0;
+
+    public OrderInfoDialog(Activity a, String orderId, String userId,String shopid,String totalprice) {
         super(a);
         this.c = a;
         this.orderId = orderId;
         this.userId = userId;
         this.shopid=shopid;
+        this.totalprice=totalprice;
         Log.i(TAG, "OrderInfoDialog: orderid: "+orderId);
         Log.i(TAG, "OrderInfoDialog: userid : "+userId);
     }
@@ -129,6 +140,7 @@ public class OrderInfoDialog extends Dialog {
                     fromReferenceshop = FirebaseDatabase.getInstance().getReference().child("Restaurents").child(shopid).child("orders/pending/" + orderId);
                     accept.setVisibility(View.GONE);
                     decline.setText("Cancel Order");
+                    decline.setVisibility(View.GONE);
                     negativeToastMessage = "Order Cancelled";
                 }
 
@@ -191,38 +203,59 @@ public class OrderInfoDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 if (ApplicationMode.currentMode.equals("owner") || ApplicationMode.currentMode.equals("customer")) {
-                    if(fromReferenceshop!=null) {
-                        fromReferenceshop.removeValue(new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                if (databaseError == null) {
-                                    Toast.makeText(getContext(), negativeToastMessage, Toast.LENGTH_SHORT).show();
-                                    dismiss();
-
-                                }
-                            }
-                        });
-                    }
-                    if(fromReferenceuser!=null)
+                    if(ApplicationMode.orderStatus.equals("delivered"))
                     {
-                        fromReferenceuser.removeValue(new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                if (databaseError == null) {
-                                    Toast.makeText(getContext(), negativeToastMessage, Toast.LENGTH_SHORT).show();
-                                    dismiss();
+                        if (fromReferenceshop != null) {
+                            fromReferenceshop.removeValue(new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                    if (databaseError == null) {
+                                        Toast.makeText(getContext(), negativeToastMessage, Toast.LENGTH_SHORT).show();
+                                        dismiss();
 
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        if (fromReferenceuser != null) {
+                            fromReferenceuser.removeValue(new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                    if (databaseError == null) {
+                                        Toast.makeText(getContext(), negativeToastMessage, Toast.LENGTH_SHORT).show();
+                                        dismiss();
+
+                                    }
+                                }
+                            });
+                        }
                     }
-                } else {
+                    if(ApplicationMode.orderStatus.equals("pending") || ApplicationMode.orderStatus.equals("delivering"))
+                    {
+
+
+                            Intent i=new Intent(applicationContext, DeclineOrder.class);
+                            i.putExtra("shopid",shopid);
+                            i.putExtra("userid",userId);
+                            i.putExtra("orderid",orderId);
+                            i.putExtra("note",note);
+                            i.putExtra("totalprice",totalprice);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            applicationContext.startActivity(i);
+                            dismiss();
+
+                    }
+                }
+                else
+                    {
                     Toast.makeText(getContext(), "You aren't authorized for this", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
+
+
 
 
     public void loadAndSetCurrentUser(String userId) {

@@ -51,9 +51,11 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
     public static final String PREFS_NAME = "MyPrefsFile";
     public ShopListAdapter( ArrayList<Shop> mshoplist,ArrayList<String> mshopidlist ,Context mcontext) {
 
+
         this.mShopList = mshoplist;
         this.mShopIDList=mshopidlist;
         this.mcontext = mcontext;
+        this.shoppingcartempty=true;
         this.firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
         this.mref= FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).child("shoppingCart");
     }
@@ -82,10 +84,16 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
                 pref= applicationContext.getSharedPreferences(PREFS_NAME,mcontext.MODE_PRIVATE);
                 editor=pref.edit();
                 String curShop=pref.getString("SHOPID",null);
+                shoppingcartempty=pref.getBoolean("Cart",true);
+                if(shoppingcartempty)
+                {
+                    mref.removeValue();
+                }
 
-                mref.addValueEventListener(new ValueEventListener() {
+             /*   mref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        //for (dataSnapshot1 in dataSnapshot
                         if(dataSnapshot.exists())
                             shoppingcartempty=false;
                         else
@@ -96,7 +104,8 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
+                });*/
+
                 Log.i(TAG, "onClick: prevsgopid : "+curShop);
                 Log.i(TAG, "onClick: shoppingcart: "+shoppingcartempty);
                 Log.i(TAG, "onClick: holder.shopid: "+holder.shopID);
@@ -127,6 +136,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
                         public void onClick(DialogInterface dialog, int which) {
                             mref.removeValue();
                             editor.putString("SHOPID",holder.shopID).apply();
+                            editor.putBoolean("Cart",true).apply();
                             Intent i=new Intent(mcontext, ShopMenuActivity.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             applicationContext.startActivity(i);

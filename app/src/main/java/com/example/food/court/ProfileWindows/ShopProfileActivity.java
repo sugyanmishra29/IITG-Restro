@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +44,7 @@ public class ShopProfileActivity extends AppCompatActivity {
     private static final int addressUpdate = 5;
     private static final int descriptionUpdate = 6;
     private static final int aboutUpdate = 7;
+    private static final int upiIdUpdate=8;
 
     private TextView shopName;
     private TextView shopEmail;
@@ -51,6 +53,7 @@ public class ShopProfileActivity extends AppCompatActivity {
     private TextView shopAddress;
     private TextView shopDescription;
     private TextView shopAbout;
+    private TextView shopUpiId;
 
     private Button signOutButton;
     private Button deleteButton;
@@ -71,6 +74,7 @@ public class ShopProfileActivity extends AppCompatActivity {
         shopDescription = findViewById(R.id.description_view);
         signOutButton = findViewById(R.id.sign_out);
         deleteButton = findViewById(R.id.delete);
+        shopUpiId=findViewById(R.id.shop_upiid);
         Log.i(TAG, "onCreate: in profileactivity");
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         String UID=currentFirebaseUser.getUid();
@@ -124,6 +128,12 @@ public class ShopProfileActivity extends AppCompatActivity {
                     dialogBuilder("Change About", "Please enter a new about", shopAbout.getText().toString().trim(), aboutUpdate);
                 }
             });
+            shopUpiId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogBuilder("Change Upi ID", "Please enter a new Upi ID", shopUpiId.getText().toString(), upiIdUpdate);
+            }
+            });
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,25 +182,29 @@ public class ShopProfileActivity extends AppCompatActivity {
                 if (!string.isEmpty()) {
                     switch (mode) {
                         case nameUpdate:
-                            updateShopInDatabase("shopName", string);
+                            updateName(string);
                             break;
                         case emailUpdate:
-                            updateShopInDatabase("shopEmail",string);
+                            updateEmail(string);
                             break;
                         case passwordUpdate:
-                            updateShopInDatabase("shopPassword",string);
+                           updatePassword(string);
                             break;
                         case phoneUpdate:
-                            updateShopInDatabase("shopNumber", string);
+                            updatePhone(string);
                             break;
                         case addressUpdate:
-                            updateShopInDatabase("shopAddress", string);
+                           updateAddress(string);
                             break;
                         case descriptionUpdate:
-                            updateShopInDatabase("shopDescription", string);
+                           updateDescription(string);
                             break;
                         case aboutUpdate:
-                            updateShopInDatabase("shopAbout", string);
+                            updateAbout(string);
+                            break;
+
+                        case upiIdUpdate:
+                            updateUpiId(string);
                             break;
                     }
                 } else
@@ -208,21 +222,98 @@ public class ShopProfileActivity extends AppCompatActivity {
 
     }
 
-    private void updateShopInDatabase(String key, String value) {
+    private void updateName(final String newName) {
+        // user also need updating
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(newName).build();
+        currentFirebaseUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            updateShopInDatabase("shopName", newName, "Name Changed");
+                        }
+                    }
+                });
+    }
+
+    private void updatePhone(String newPhone) {
+        // only database need updating
+        updateShopInDatabase("shopPhone", newPhone, "Phone Number Changed");
+    }
+
+    private void updateAddress(String newAddress) {
+        // only database need updating
+        updateShopInDatabase("shopAddress", newAddress, "Address Changed");
+    }
+
+    private void updateUpiId(String newUpiId) {
+        // only database need updating
+        updateShopInDatabase("shopUpiId", newUpiId, "Upi Id Changed");
+    }
+    private void updateAbout(String newAbout) {
+        // only database need updating
+        updateShopInDatabase("shopAbout", newAbout, "About Changed");
+    }
+    private void updateDescription(String newDescription) {
+        // only database need updating
+        updateShopInDatabase("shopDescription", newDescription, "Description Changed");
+    }
+
+    private void updateEmail(final String newEmail) {
+        // user also need updating
+        currentFirebaseUser.updateEmail(newEmail)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Shop email address updated.");
+                            currentFirebaseUser.sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                updateShopInDatabase("shopEmail", newEmail, "Email Change, Please verify your new email");
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }
+                });
+    }
+
+    private void updatePassword(final String newPassword) {
+        // user also need updating
+        currentFirebaseUser.updatePassword(newPassword)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            updateShopInDatabase("shopPassword", newPassword, "Password Changed");
+                        }
+                    }
+                });
+    }
+    private void updateShopInDatabase(String key, String value, final String toastMessage) {
         mReference.child(key).setValue(value, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                 if (databaseError == null) {
-                    Toast.makeText(getApplicationContext(), "Update Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
                     updateShopAndUI();
                     Log.i(TAG, "Shop Updated in Database");
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error updating ", Toast.LENGTH_SHORT).show();
-                    Log.i(TAG, "Error updating shop" + databaseError.toString());
+                    Toast.makeText(getApplicationContext(), "Error updating profile", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Error updating shop");
                 }
             }
         });
+
     }
+
+
+
+
 
     private void updateShopAndUI() {
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -236,7 +327,7 @@ public class ShopProfileActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Shop shop=new Shop("name","email","password","number","address","description","about",null);
+                    Shop shop=new Shop("name","email","password","number","address","description","about",null,"");
 
                     setCurrentShopProfile(shop);
                     updateUI();
@@ -260,6 +351,7 @@ public class ShopProfileActivity extends AppCompatActivity {
         ShopInfo.setShopAddress(shop.getShopAddress());
         ShopInfo.setShopDescription(shop.getShopDescription());
         ShopInfo.setShopAbout(shop.getShopAbout());
+        ShopInfo.setShopUpiId(shop.getShopUpiId());
 
     }
 
@@ -272,5 +364,6 @@ public class ShopProfileActivity extends AppCompatActivity {
         shopAddress.setText(ShopInfo.shopAddress);
         shopDescription.setText(ShopInfo.shopDescription);
         shopAbout.setText(ShopInfo.shopAbout);
+        shopUpiId.setText(ShopInfo.shopUpiId);
     }
 }

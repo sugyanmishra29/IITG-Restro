@@ -12,7 +12,9 @@ public class UserInfo {
     public static String userPhone;
     public static String userAddress;
     public static URL userPhotoUrl;
+    public static String userUpiId;
 
+    public static  void setUserUpiId(String userUpiId){UserInfo.userUpiId=userUpiId;}
     public static void setUserID(String userID) {
         UserInfo.userID = userID;
     }

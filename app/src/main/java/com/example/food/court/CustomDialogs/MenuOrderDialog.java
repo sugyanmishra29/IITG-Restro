@@ -52,14 +52,14 @@ public class MenuOrderDialog extends Dialog implements android.view.View.OnClick
         super(a);
         this.c=a;
     }
-   /* public MenuOrderDialog(Activity a,Context mcontext,String shopid) {
+   public MenuOrderDialog(Activity a,Context mcontext) {
         super(a);
         this.c = a;
         this.mcontext=mcontext;
-        this.shopid=shopid;
+
     }
 
-    */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,11 +133,11 @@ public class MenuOrderDialog extends Dialog implements android.view.View.OnClick
     public void onClick(View v) {
         addToCart.setEnabled(false);
 
-       /* pref= mcontext.getSharedPreferences(PREFS_NAME,mcontext.MODE_PRIVATE);
+        pref= mcontext.getSharedPreferences(PREFS_NAME,mcontext.MODE_PRIVATE);
         editor=pref.edit();
-        editor.putString("USERID",shopid);
+        editor.putBoolean("Cart",false).apply();
 
-        */
+
         addToCart.setBackgroundColor(c.getResources().getColor(R.color.grey));
         if (mode == 1) {
             getRadioButtonsState(drinkGroup);

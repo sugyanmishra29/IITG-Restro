@@ -20,19 +20,20 @@ public class User {
     private String userPassword;
     private String userPhone;
     private String userAddress;
+    private String userUpiId;
 
 
     public User() {
 
     }
 
-    public User(String userEmail, String userPassword, String userName, String userPhone, String userAddress, URL userPhotoUrl) {
+    public User(String userEmail, String userPassword, String userName, String userPhone, String userAddress, URL userPhotoUrl,String userUpiId) {
         this.userEmail = userEmail;
         this.userName = userName;
         this.userPassword = userPassword;
         this.userPhone = userPhone;
         this.userAddress = userAddress;
-
+        this.userUpiId=userUpiId;
     }
 
     public String getUserName() {
@@ -56,8 +57,9 @@ public class User {
     public String getUserAddress() {
         return userAddress;
     }
+    public String getUserUpiId(){return userUpiId;}
 
-
+    public void setUserUpiId(String userUpiId){this.userUpiId=userUpiId;}
     public void setUserAddress(String userAddress) {
         this.userAddress = userAddress;
     }
@@ -104,7 +106,7 @@ public class User {
         UserInfo.setUserEmail(userEmail);
         UserInfo.setUserPhone(userPhone);
         UserInfo.setUserPassword(userPassword);
-
+        UserInfo.setUserUpiId(userUpiId);
     }
 
 }
