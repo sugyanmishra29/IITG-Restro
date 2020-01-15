@@ -22,6 +22,8 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="shop_name"><u>Shop Name</u>:</string>
+    <string name="shop_upiid"><u>Upi ID</u>:</string>
+    <string name="user_upiid"><u>Upi ID</u>:</string>
     <string name="about"><u>About</u>:</string>
     <string name="description"><u>Description</u>:</string>
     <string name="prompt_password">Password </string>

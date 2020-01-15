@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 public class Restaurent_homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
 
+    String name,email;
     private static final String TAG = "Restaurent_homepage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +52,16 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Shop shop=dataSnapshot.getValue(Shop.class);
                 Log.i(TAG, "onDataChange: shopname:"+shop.getShopName());
+
+                name=shop.getShopName();
+                email=shop.getShopEmail();
                 TextView shopname=findViewById(R.id.name);
                 TextView shopemail=findViewById(R.id.email);
-                String name=shop.getShopName();
-                String email=shop.getShopEmail();
                 Log.i(TAG, "onDataChange: shopname: "+name);
                 Log.i(TAG, "onDataChange: shopemail: "+email);
+                if(shopname!=null)
                 shopname.setText(name);
+                if(shopemail!=null)
                 shopemail.setText(email);
             }
 

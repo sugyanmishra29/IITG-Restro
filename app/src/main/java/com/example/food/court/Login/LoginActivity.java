@@ -217,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                 });
                                 // writes user to database
-                                User newUser = new User(email, password, name, phone_no, address, null);
+                                User newUser = new User(email, password, name, phone_no, address, null,"");
                                 mUserDatabaseReference.child(user.getUid()).child("Info").setValue(newUser);
                                 mUserDatabaseReference.child(user.getUid()).child("Type").setValue("U");
 

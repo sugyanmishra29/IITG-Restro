@@ -221,7 +221,7 @@ private  String TYPE="Type";
                                     }
                                 });
                                 // writes user to database
-                                Shop newUser = new Shop(name,email,password, phone_no, address,"description","about", null);
+                                Shop newUser = new Shop(name,email,password, phone_no, address,"description","about", null,"");
                                 mUserDatabaseReference.child(user.getUid()).child("Info").setValue(newUser);
                                 mUserDatabaseReference.child(user.getUid()).child("Type").setValue("R");
 

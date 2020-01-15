@@ -1,10 +1,12 @@
 package com.example.food.court;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.food.court.ProfileWindows.UserProfileActivity;
 import com.example.food.court.Restaurent.Restaurent;
 import com.example.food.court.Shop.Shop;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +44,10 @@ public class ShopList extends AppCompatActivity {
     private ArrayList<Shop> mshoplsit=new ArrayList<>();
     private ArrayList<String> mshopidlist=new ArrayList<>();
     private DatabaseReference mDatabase;
+    private FirebaseUser cuser;
+    ProgressDialog progressDialog;
+    private boolean cartempty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +56,15 @@ public class ShopList extends AppCompatActivity {
         recyclerView = findViewById(R.id.rv);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+       /* progressDialog = new ProgressDialog(ShopList.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();*/
 
 
 
 
+        cuser= FirebaseAuth.getInstance().getCurrentUser();
         mDatabase=FirebaseDatabase.getInstance().getReference().child("Restaurents");
 
         Log.i(TAG, "onCreate: shoplidt started");
@@ -61,6 +76,7 @@ public class ShopList extends AppCompatActivity {
                     Log.i(TAG, "onDataChange:shop id :"+dataSnapshot1.getKey());
                     mshopidlist.add(dataSnapshot1.getKey());
                     Shop user = dataSnapshot1.child("Info").getValue(Shop.class);
+                    //if(user.getShopUpiId()!=null && !user.getShopUpiId().equals(""))
                     mshoplsit.add(user);
                     Log.i(TAG, "onDataChange: "+mshoplsit.get(mshoplsit.size()-1).getShopName());
                 }
@@ -81,7 +97,70 @@ public class ShopList extends AppCompatActivity {
 
 
     }
+  /*  private void attachlistrener()
+    {
+        cartempty=true;
+        cuser= FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase.getInstance().getReference().child("Users").child(cuser.getUid()).child("shoppingCart").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(dataSnapshot.exists())
+                {
+                    cartempty=false;
+                }
+                else
+                {
+                    cartempty=true;
+                }
+            }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(dataSnapshot.exists())
+                {
+                    cartempty=false;
+                }
+                else
+                {
+                    cartempty=true;
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    cartempty=false;
+                }
+                else
+                {
+                    cartempty=true;
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(dataSnapshot.exists())
+                {
+                    cartempty=false;
+                }
+                else
+                {
+                    cartempty=true;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //for(int i=0;i<1000;i++)
+        progressDialog.dismiss();
+    }
+
+
+   */
 
 
 
@@ -145,6 +224,7 @@ public class ShopList extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         //adapter.startListening();
     }
 

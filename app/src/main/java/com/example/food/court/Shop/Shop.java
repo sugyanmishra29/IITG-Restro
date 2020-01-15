@@ -22,6 +22,7 @@ public class Shop {
     private String shopAddress;
     private String shopDescription;
     private String shopAbout;
+    private String shopUpiId;
     private static final String TAG = "Shop";
     public Shop() {
         //empty constructor for firebase to map data values into shop object
@@ -36,7 +37,7 @@ public class Shop {
         this.shopDescription = shopDescription;
         this.shopAbout = shopAbout;
     }
-    public Shop(String shopName, String shopEmail, String shopPassword, String shopNumber, String shopAddress, String shopDescription, String shopAbout, URL userPhotoUrl) {
+    public Shop(String shopName, String shopEmail, String shopPassword, String shopNumber, String shopAddress, String shopDescription, String shopAbout, URL userPhotoUrl,String shopUpiId) {
         this.shopName = shopName;
         this.shopEmail=shopEmail;
         this.shopPassword=shopPassword;
@@ -44,6 +45,7 @@ public class Shop {
         this.shopAddress = shopAddress;
         this.shopDescription = shopDescription;
         this.shopAbout = shopAbout;
+        this.shopUpiId=shopUpiId;
     }
 
     public String getShopName() {
@@ -68,7 +70,9 @@ public class Shop {
 
     public String getShopEmail(){return shopEmail;}
     public String getShopPassword(){return shopPassword;}
+    public String getShopUpiId(){return shopUpiId;}
 
+    public void setShopUpiId(String shopUpiId){this.shopUpiId=shopUpiId;}
     public void setShopName(String shopName) {
         this.shopName = shopName;
     }
@@ -121,5 +125,6 @@ public class Shop {
         ShopInfo.setShopPassword(shopPassword);
         ShopInfo.setShopDescription(shopDescription);
         ShopInfo.setShopAbout(shopAbout);
+        ShopInfo.setShopUpiId(shopUpiId);
     }
 }

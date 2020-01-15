@@ -16,7 +16,9 @@ public final class ShopInfo {
     public static String shopDescription;
     public static String shopAbout;
     public static URL shopPhotoUrl;
+    public static String shopUpiId;
 
+    public static void setShopUpiId(String shopUpiId){ShopInfo.shopUpiId=shopUpiId;}
     public static void setShopID(String userID) {
         ShopInfo.shopID = userID;
     }

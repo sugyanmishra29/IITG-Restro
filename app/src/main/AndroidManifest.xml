@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.food.court">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/custom_icon"
@@ -11,7 +9,9 @@
         android:roundIcon="@mipmap/custom_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Customer_About_Us"
+        <activity android:name=".Menu.MenuItems.DeclineOrder"></activity>
+        <activity
+            android:name=".Customer_About_Us"
             android:label="About Us">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -63,13 +63,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Menu.MenuItems.itemEditor" />
         <activity android:name=".ProfileWindows.itemInfoWindow" />
-        <activity android:name=".Order.ShoppingCart.ShoppingCart"
+        <activity
+            android:name=".Order.ShoppingCart.ShoppingCart"
             android:label="My Cart">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".Order.OrdersTerminalActivity"
+        <activity
+            android:name=".Order.OrdersTerminalActivity"
             android:label="Orders">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -85,5 +87,7 @@
             -->
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
