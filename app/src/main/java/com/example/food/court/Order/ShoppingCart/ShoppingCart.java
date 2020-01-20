@@ -26,6 +26,7 @@ import com.example.food.court.ApplicationMode;
 import com.example.food.court.MainActivity;
 import com.example.food.court.Menu.MenuItems.ItemAdapter;
 import com.example.food.court.Menu.ShopMenuActivity;
+import com.example.food.court.Notifications.Api;
 import com.example.food.court.Order.OrderItem.Order;
 import com.example.food.court.Order.OrderItem.OrdersAdapter;
 import com.example.food.court.Order.OrdersTerminalActivity;
@@ -43,8 +44,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ShoppingCart extends AppCompatActivity {
     public static final String TAG = "shoppingCart";
@@ -59,6 +68,7 @@ public class ShoppingCart extends AppCompatActivity {
     private View labelView;
     private ArrayList<ShoppingCartItem> allItems;
     private int totalPrice;
+    private String Token;
     private FloatingActionButton floatingButton;
 public static Context context;
     private ItemAdapter adapter;
@@ -129,6 +139,7 @@ public static Context context;
             public void onClick(View view) {
                 if (ApplicationMode.checkConnectivity(ShoppingCart.this)) {
                     // only allow order if internet is available
+                    sendNotification(ShopID);
 
                     FirebaseDatabase.getInstance().getReference().child("Restaurents").child(ShopID).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -186,6 +197,50 @@ public static Context context;
             }
         });
 
+
+    }
+    private  void sendNotification(String shopid){
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Restaurents").child(shopid).child("Token");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    Token=dataSnapshot.getValue(String.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        if(Token!=null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://foudserver.firebaseapp.com/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            Api api = retrofit.create(Api.class);
+
+            Call<ResponseBody> call = api.sendNotification(Token," Restaurents", "Order Received .");
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        Toast.makeText(ShoppingCart.this, response.body().string(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
 
     }
 
@@ -304,7 +359,7 @@ public static Context context;
                         }
                     }
                 });
-
+                //sendNotification(ShopID);
 
                // Toast.makeText(getApplicationContext(), "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.e("UPI", "payment successfull: "+approvalRefNo);

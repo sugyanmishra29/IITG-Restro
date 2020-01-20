@@ -139,7 +139,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
                 TextView tv = view.findViewById(R.id.soOrderID);
                 TextView tv1 = view.findViewById(R.id.soUserID);
                 // gives orderId and userId to dialog to allow it to retrieve it from database
-                OrderInfoDialog od = new OrderInfoDialog(activity, tv.getText().toString(), tv1.getText().toString(),orderItem.getShopID(),orderItem.getTotalPrice());
+                OrderInfoDialog od = new OrderInfoDialog(activity, tv.getText().toString(), tv1.getText().toString(),orderItem.getShopID(),orderItem.getTotalPrice(),mcontext);
                 od.show();
             }
         });
