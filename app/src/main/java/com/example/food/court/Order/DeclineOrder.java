@@ -1,4 +1,4 @@
-package com.example.food.court.Menu.MenuItems;
+package com.example.food.court.Order;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.food.court.ApplicationMode;
+import com.example.food.court.Notifications.Api;
 import com.example.food.court.Order.OrderItem.Order;
 import com.example.food.court.R;
 import com.example.food.court.User.UserInfo;
@@ -26,7 +27,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DeclineOrder extends AppCompatActivity {
 
@@ -34,6 +43,9 @@ public class DeclineOrder extends AppCompatActivity {
     Button yes,no;
     String userName,userUpiId,note,totalPrice,userid,shopid,orderid;
     DatabaseReference fromuser,fromshop;
+    String Token;
+    String title;
+    String body;
     final int UPI_PAYMENT = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +54,7 @@ public class DeclineOrder extends AppCompatActivity {
         linearLayout=findViewById(R.id.parentlinear);
         yes=findViewById(R.id.yes);
         no=findViewById(R.id.no);
+        title="User";
 
         Intent i=getIntent();
         note=i.getStringExtra("note");
@@ -54,11 +67,13 @@ public class DeclineOrder extends AppCompatActivity {
         {
             fromshop= FirebaseDatabase.getInstance().getReference().child("Restaurents").child(shopid).child("orders").child("pending").child(orderid);
             fromuser=FirebaseDatabase.getInstance().getReference().child("Users").child(userid).child("orders").child("pending").child(orderid);
+            body="Sorry! Your order is declined. But you didn't lost money.";
         }
         if(ApplicationMode.orderStatus.equals("delivering"))
         {
             fromshop= FirebaseDatabase.getInstance().getReference().child("Restaurents").child(shopid).child("orders").child("delivering").child(orderid);
             fromuser=FirebaseDatabase.getInstance().getReference().child("Users").child(userid).child("orders").child("delivering").child(orderid);
+            body="Sorry!Restaurent has to cancel your delivery due to unavoidable reason. But you didn't lost money.";
         }
 
         FirebaseDatabase.getInstance().getReference().child("Users").child(userid).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,6 +106,51 @@ public class DeclineOrder extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private  void sendNotification(String userId,String title,String body){
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Token");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    Token=dataSnapshot.getValue(String.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        if(Token!=null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://foudserver.firebaseapp.com/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            Api api = retrofit.create(Api.class);
+
+            Call<ResponseBody> call = api.sendNotification(Token,title, body);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        Toast.makeText(DeclineOrder.this, response.body().string(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
+
     }
 
 
@@ -193,6 +253,7 @@ public class DeclineOrder extends AppCompatActivity {
 
                     }
                 });
+                sendNotification(userid,title,body);
 
                 // Toast.makeText(getApplicationContext(), "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.e("UPI", "payment successfull: "+approvalRefNo);

@@ -22,6 +22,10 @@
 
                 android:icon="@drawable/ic_local_grocery_store_black_24dp" />
             <item
+                android:id="@+id/nav_notifications"
+                android:icon="@drawable/ic_email"
+                android:title="Notification" />
+            <item
                 android:id="@+id/mCallButton"
                 android:title="Contact App"
 
@@ -38,6 +42,7 @@
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_directions_run_black_24dp"
                 android:title="Sign out" />
+
         </menu>
     </item>
 

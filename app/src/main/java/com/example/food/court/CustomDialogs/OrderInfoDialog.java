@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,28 +19,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food.court.ApplicationMode;
-import com.example.food.court.Menu.MenuItems.DeclineOrder;
-import com.example.food.court.Menu.MenuItems.ItemAdapter;
-import com.example.food.court.Order.OrderItem.Order;
-import com.example.food.court.Order.OrderItem.OrdersAdapter;
+import com.example.food.court.Order.DeclineOrder;
+import com.example.food.court.Notifications.Api;
 import com.example.food.court.Order.OrdersTerminalActivity;
-import com.example.food.court.Order.ShoppingCart.ShoppingCart;
 import com.example.food.court.Order.ShoppingCart.ShoppingCartAdapter;
 import com.example.food.court.Order.ShoppingCart.ShoppingCartItem;
 import com.example.food.court.R;
 import com.example.food.court.User.User;
-import com.example.food.court.User.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OrderInfoDialog extends Dialog {
     public static final String TAG = "orderInfoDialog";
@@ -73,17 +72,21 @@ public class OrderInfoDialog extends Dialog {
     FirebaseUser cuser;
 
     String shopid;
-
+    String title;
+    String body;
+    String Token;
+    Context mcontext;
     String userName,userUpiId,note,totalprice;
     final int UPI_PAYMENT = 0;
 
-    public OrderInfoDialog(Activity a, String orderId, String userId,String shopid,String totalprice) {
+    public OrderInfoDialog(Activity a, String orderId, String userId,String shopid,String totalprice,Context mcontext) {
         super(a);
         this.c = a;
         this.orderId = orderId;
         this.userId = userId;
         this.shopid=shopid;
         this.totalprice=totalprice;
+        this.mcontext=mcontext;
         Log.i(TAG, "OrderInfoDialog: orderid: "+orderId);
         Log.i(TAG, "OrderInfoDialog: userid : "+userId);
     }
@@ -94,7 +97,7 @@ public class OrderInfoDialog extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.order_info_window);
-
+        title="User";
         userNameView = findViewById(R.id.oi_user_name);
         userAddressView = findViewById(R.id.oi_user_address);
         userPhoneView = findViewById(R.id.oi_user_number);
@@ -127,6 +130,7 @@ public class OrderInfoDialog extends Dialog {
                 if (ApplicationMode.ordersViewer == "owner") {
                     accept.setText("ACCEPT ORDER");
                     decline.setText("DECLINE ORDER");
+
                     fromReference=FirebaseDatabase.getInstance().getReference().child("Restaurents").child(cuser.getUid()).child("/orders/pending/"+orderId);
                     fromReferenceuser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("orders/pending/" + orderId);
                     toReferenceuser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("/orders/delivering");
@@ -318,6 +322,55 @@ public class OrderInfoDialog extends Dialog {
                 Log.i(TAG, databaseError.toString());
             }
         });
+        if(ApplicationMode.orderStatus.equals("pending"))
+            body="Your Order is Accepted.";
+        else
+            body="Your Order is Delivered.";
+        sendNotification(userId,title,body);
+    }
+    private  void sendNotification(String userId,String title,String body){
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Token");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    Token=dataSnapshot.getValue(String.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        if(Token!=null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://foudserver.firebaseapp.com/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            Api api = retrofit.create(Api.class);
+
+            Call<ResponseBody> call = api.sendNotification(Token,title, body);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        Toast.makeText(mcontext, response.body().string(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
+
     }
 
 

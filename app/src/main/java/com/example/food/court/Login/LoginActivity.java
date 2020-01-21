@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.security.MessageDigest;
 
@@ -300,24 +302,42 @@ public class LoginActivity extends AppCompatActivity {
                                             .commit();
                                     Log.i(TAG, "prefs created");
                                 }
-                                getSharedPreferences(PREFS_NAME,MODE_PRIVATE).edit()
-                                        .putString(TYPE,"U").apply();
+
 
                                 final FirebaseUser user = mAuthentication.getCurrentUser();
                                 if (user.isEmailVerified()) {
-                                    User.loadCurrentUser(user.getUid());
+
+                                    Log.i(TAG, "onComplete: useridwhilesignin: "+user.getUid());
                                     FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if(!dataSnapshot.exists())
-                                            { Toast.makeText(LoginActivity.this,"You are not customer",Toast.LENGTH_SHORT).show();
+                                            {
                                                 FirebaseAuth.getInstance().signOut();
+                                                Log.i(TAG, "onDataChange: data does not exist");
+                                                Toast.makeText(LoginActivity.this,"You are not customer",Toast.LENGTH_SHORT).show();
 
-
+                                                progressDialog.dismiss();
                                             }
                                             else
                                             {
                                                 progressDialog.dismiss();
+                                                User.loadCurrentUser(user.getUid());
+                                                getSharedPreferences(PREFS_NAME,MODE_PRIVATE).edit()
+                                                        .putString(TYPE,"U").apply();
+                                                FirebaseInstanceId.getInstance().getInstanceId()
+                                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    String token = task.getResult().getToken();
+                                                                    FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Token").setValue(token);
+                                                                } else {
+                                                                    Log.i(TAG, "onComplete: token error");
+                                                                }
+                                                            }
+                                                        });
                                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                                 i.putExtra("USER_ID", user.getUid());
                                                 i.putExtra("USER",USER);
