@@ -59,6 +59,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
     private FirebaseUser current_user;
+    private FirebaseUser user;
     private DatabaseReference mReference;
 
     @Override
@@ -89,7 +90,7 @@ public class UserProfileActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         AuthCredential credential = EmailAuthProvider
                 .getCredential(UserInfo.userEmail, UserInfo.userPassword);
@@ -171,6 +172,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 abuilder.setPositiveButton("SIGN OUT", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Token").setValue(null);
                         FirebaseAuth.getInstance().signOut();
                         finish();
                         Toast.makeText(UserProfileActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();

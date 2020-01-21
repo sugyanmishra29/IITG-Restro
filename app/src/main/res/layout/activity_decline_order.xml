@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Menu.MenuItems.DeclineOrder">
+    tools:context=".Order.DeclineOrder">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="75dp"
         android:id="@+id/parentlinear"
         android:orientation="vertical"
         android:padding="5dp"
@@ -25,15 +25,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Do you really want to cancel the order?
-                 "
-                android:textSize="40sp" />
+                android:text="Do you really want to cancel the order?"
+                android:textSize="40sp"
+                android:textAlignment="center"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="You have to repay the money for it if Yes. "
-                android:textSize="40sp" />
+                android:text="You have to pay the money back to the customer."
+                android:textSize="24sp" />
 
         </LinearLayout>
 
@@ -41,14 +41,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <Button
                 android:id="@+id/yes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:alpha="0.75"
                 android:background="@drawable/mybutton"
                 android:fontFamily="@font/mainfont"
                 android:text="Yes"
@@ -60,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:alpha="0.75"
                 android:background="@drawable/mybutton"
                 android:fontFamily="@font/mainfont"
                 android:text="No"

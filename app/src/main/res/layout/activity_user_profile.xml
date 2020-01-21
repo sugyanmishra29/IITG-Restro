@@ -160,7 +160,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
 
         <Button
             android:id="@+id/sign_out"
@@ -171,7 +173,7 @@
             android:fontFamily="@font/mainfont"
             android:background="@drawable/mybutton"
             android:textColor="@color/white"
-            android:alpha="0.75"/>
+            android:layout_marginRight="16dp"/>
 
         <Button
             android:id="@+id/delete"
@@ -182,8 +184,7 @@
             android:background="@drawable/mybutton"
             android:textColor="@color/white"
             android:text="DELETE ACCOUNT"
-            android:fontFamily="@font/mainfont"
-            android:alpha="0.75"/>
+            android:fontFamily="@font/mainfont" />
 
     </LinearLayout>
 

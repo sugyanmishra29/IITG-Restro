@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.security.MessageDigest;
 
@@ -304,23 +306,38 @@ private  String TYPE="Type";
                                             .commit();
                                     Log.i(TAG, "prefs created");
                                 }
-                                getSharedPreferences(PREFS_NAME,MODE_PRIVATE).edit()
-                                        .putString(TYPE,"R").apply();
 
                                 final FirebaseUser user = mAuthentication.getCurrentUser();
                                 if (user.isEmailVerified()) {
-                                    Shop.loadCurrentUser(user.getUid());
-                                    progressDialog.dismiss();
+
+
                                     FirebaseDatabase.getInstance().getReference().child("Restaurents").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if(!dataSnapshot.exists())
-                                            {  Toast.makeText(Restaurent_login.this,"You are not shop owner",Toast.LENGTH_SHORT).show();
+                                            {
                                                 FirebaseAuth.getInstance().signOut();
-
-                                                finish();
+                                                progressDialog.dismiss();
+                                                Toast.makeText(Restaurent_login.this,"You are not shop owner",Toast.LENGTH_SHORT).show();
                                             }
                                             else{
+                                                progressDialog.dismiss();
+                                                Shop.loadCurrentUser(user.getUid());
+                                                getSharedPreferences(PREFS_NAME,MODE_PRIVATE).edit()
+                                                        .putString(TYPE,"R").apply();
+
+                                                FirebaseInstanceId.getInstance().getInstanceId()
+                                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    String token = task.getResult().getToken();
+                                                                    FirebaseDatabase.getInstance().getReference().child("Restaurents").child(user.getUid()).child("Token").setValue(token);
+                                                                } else {
+                                                                    Log.i(TAG, "onComplete: token error");
+                                                                }
+                                                            }
+                                                        });
                                                 Intent i = new Intent(Restaurent_login.this,MainActivity.class);
                                                 i.putExtra("USER_ID", user.getUid());
                                                 i.putExtra("USER",USER);

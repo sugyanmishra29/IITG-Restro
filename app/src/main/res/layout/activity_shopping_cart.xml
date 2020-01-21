@@ -15,7 +15,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <Button
         android:id="@+id/finalOrderButton"
         android:layout_width="match_parent"
@@ -25,7 +24,6 @@
         android:text="Order"
         android:textSize="25sp"
         android:textColor="@color/white"
-        android:alpha="0.75"
         android:background="@drawable/mybutton"/>
 
     <LinearLayout

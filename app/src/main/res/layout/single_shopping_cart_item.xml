@@ -6,17 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="4dp"
-    card_view:cardBackgroundColor="#B4B3B3"
-    card_view:cardCornerRadius="8dp"
+    card_view:cardBackgroundColor="@color/transparent_grey"
+    card_view:cardCornerRadius="16dp"
     card_view:cardElevation="6dp">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:minHeight="@dimen/list_item_height">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:minHeight="@dimen/list_item_height"
+        android:background="@color/transparent_grey">
 
     <RelativeLayout
-        android:background="#B4B3B3"
+        android:background="@color/transparent_grey"
         android:id="@+id/sTextContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,7 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="5dp">
+            android:paddingBottom="5dp"
+            android:background="@color/transparent_grey">
 
             <TextView
                 android:id="@+id/sItemNameView"

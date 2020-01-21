@@ -156,6 +156,8 @@ public class ShopProfileActivity extends AppCompatActivity {
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseDatabase.getInstance().getReference().child("Restaurents").child(currentFirebaseUser.getUid()).child("Token").setValue(null);
+
                 FirebaseAuth.getInstance().signOut();
                 Intent i = new Intent(ShopProfileActivity.this, MainActivity.class);
 // set the new task and clear flags

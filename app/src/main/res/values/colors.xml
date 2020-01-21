@@ -11,5 +11,6 @@
     <color name="light_grey">#E6E6E6</color>
     <color name="dark_grey">#424242</color>
     <color name="navigation_header_ka_color">#0094C1</color>
+    <color name="transparent_grey">#C5C5C5</color>
 
 </resources>

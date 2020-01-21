@@ -1,7 +1,9 @@
 package com.example.food.court;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,11 +14,16 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +36,7 @@ import android.widget.Toast;
 
 import com.example.food.court.Login.WelcomeScreenActivity;
 import com.example.food.court.Menu.ShopMenuActivity;
+import com.example.food.court.Notifications.Token;
 import com.example.food.court.Order.OrdersTerminalActivity;
 import com.example.food.court.Order.ShoppingCart.ShoppingCart;
 import com.example.food.court.ProfileWindows.ShopProfileActivity;
@@ -40,11 +48,16 @@ import com.example.food.court.User.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import static com.example.food.court.App.CHANNEL_1_ID;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -59,8 +72,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth mAuthentication;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseUser current_user;
+    private FirebaseUser user;
     private ProgressDialog progressDialog;
     private String contactapp;
+    private NotificationManagerCompat notificationManager;
     SharedPreferences pref; //sp-the name of shared preferences has to be the same in both the files
     SharedPreferences.Editor editor;//editor-the name of the editor can be different in both the files
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -71,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         contactapp="+919458773422";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        notificationManager = NotificationManagerCompat.from(this);
+
         Log.i(TAG, "onCreate: started");
         //enable local data storage
         if (!calledAlready) {
@@ -86,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAddress = findViewById(R.id.mAddress);
         mButton = findViewById(R.id.mCallButton);
         viewMenuButton = findViewById(R.id.mViewMenuButton);*/
-
+        FirebaseMessaging.getInstance().subscribeToTopic("updates");
         mAuthentication = FirebaseAuth.getInstance();
         current_user = mAuthentication.getCurrentUser();
         Log.i(TAG, "onCreate: started3");
@@ -116,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                 user = firebaseAuth.getCurrentUser();
                 if (user != null && user.isEmailVerified()) {
                     if(typeing.equals("R"))
                     {
@@ -132,6 +149,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                             DatabaseReference m=FirebaseDatabase.getInstance().getReference().child("Users").child(cuser.getUid()).child("Info");
+                            m.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    updateToken(FirebaseInstanceId.getInstance().getToken());
+                                       // sendOnChannel1();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                             m.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -148,6 +177,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 }
                             });
+                           /* Intent intent = new Intent();
+                            String packageName = getPackageName();
+                            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                Log.i(TAG, "onCreate isTgnore:"+pm.isIgnoringBatteryOptimizations(packageName));
+                                if (pm != null && !pm.isIgnoringBatteryOptimizations(packageName))
+                                {
+                                    intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                                    startActivity(intent);
+                                }
+                            }*/
                     }
 
                     Log.i(TAG, "onAuthStateChanged: sdkmksf"+typeing+"9m");
@@ -166,6 +206,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+    private  void  updateToken(String token)
+    {
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1=new Token(token);
+        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+        reference.child(user.getUid()).setValue(token1);
+
+    }
+
+    public void sendOnChannel1() {
+
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.main_image)
+                .setContentTitle("User")
+                .setContentText("Profile Updated")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+
+        notificationManager.notify(1, notification);
+    }
+
 /*
     private void inquiryDialog() {
         //dialog to verify owner
@@ -361,6 +424,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent1 = new Intent(getApplicationContext(),Customer_About_Us.class);
                 startActivity(intent1);
                 break;
+            case R.id.nav_notifications:
+                Intent intent2 = new Intent(getApplicationContext(),Noti_Settings.class);
+                startActivity(intent2);
+                break;
             case R.id.nav_send:
                 drawer.closeDrawer(GravityCompat.START);
                 androidx.appcompat.app.AlertDialog.Builder abuilder = new AlertDialog.Builder(MainActivity.this);
@@ -369,6 +436,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 abuilder.setPositiveButton("SIGN OUT", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Token").setValue(null);
+
                         FirebaseAuth.getInstance().signOut();
                         finish();
                         Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
@@ -384,9 +453,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.mCallButton:
                 drawer.closeDrawer(GravityCompat.START);
-                Intent intent2 = new Intent(Intent.ACTION_DIAL);
-                intent2.setData(Uri.parse("tel:" + contactapp));
-                startActivity(intent2);
+                Intent intent3 = new Intent(Intent.ACTION_DIAL);
+                intent3.setData(Uri.parse("tel:" + contactapp));
+                startActivity(intent3);
                 break;
             case R.id.shoppingCart:
                 drawer.closeDrawer(GravityCompat.START);
@@ -408,4 +477,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        /*Intent intent = new Intent();
+        String packageName = getPackageName();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.i(TAG, "onStart: isTgnore:"+pm.isIgnoringBatteryOptimizations(packageName));
+            if (pm != null && !pm.isIgnoringBatteryOptimizations(packageName))
+            {
+
+                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                startActivity(intent);
+            }
+        }*/
+    }
 }

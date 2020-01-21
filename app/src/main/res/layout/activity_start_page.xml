@@ -45,7 +45,6 @@
             android:textStyle="bold"
             android:background="@drawable/mybutton"
             android:textColor="@color/white"
-            android:alpha="0.75"
             />
 
         <Button
@@ -59,7 +58,6 @@
             android:layout_gravity="center"
             android:background="@drawable/mybutton"
             android:textColor="@color/white"
-            android:alpha="0.75"
             />
     </LinearLayout>
 

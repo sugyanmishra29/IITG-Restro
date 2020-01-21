@@ -139,7 +139,6 @@
             android:text="SIGN UP"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:alpha="0.75"
             android:fontFamily="@font/mainfont"
             android:background="@drawable/mybutton"
             android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />

@@ -35,16 +35,19 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="122dp"
+        android:padding="4dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textSize="28sp"
         android:textColor="@color/white"
         android:background="@drawable/mybutton"
-        android:alpha="0.75"
         android:text="SIGN UP"
         android:fontFamily="@font/mainfont"
         android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
     <Button
         android:id="@+id/sign_in"
+        android:padding="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -52,10 +55,11 @@
         android:textSize="28sp"
         android:layout_marginBottom="56dp"
         android:text="LOG IN"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:fontFamily="@font/mainfont"
         android:textColor="@color/white"
         android:background="@drawable/mybutton"
-        android:alpha="0.75"
         android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
 </RelativeLayout>
