@@ -37,7 +37,9 @@
         android:background="@drawable/mybutton"
         android:text="SIGN UP"
         android:textColor="@color/white"
-        android:alpha="0.75"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
         android:fontFamily="@font/mainfont"
         android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
@@ -51,7 +53,9 @@
         android:text="LOG IN"
         android:fontFamily="@font/mainfont"
         android:background="@drawable/mybutton"
-        android:alpha="0.75"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
         android:textColor="@color/white"
         android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
 

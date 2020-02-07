@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="64dp"
         android:id="@+id/parentlinear"
         android:orientation="vertical"
         android:padding="5dp"
@@ -25,15 +25,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Do you really want to cancel the order?
-                 "
+                android:text="Do you really want to cancel the order?"
+                android:textAlignment="center"
                 android:textSize="40sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="You have to repay the money for it if Yes. "
-                android:textSize="40sp" />
+                android:textAlignment="center"
+                android:text="You have to return back the money to the customer. Continue?"
+                android:textSize="32sp" />
 
         </LinearLayout>
 

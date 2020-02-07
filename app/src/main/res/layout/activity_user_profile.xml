@@ -33,6 +33,7 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/back"
             android:padding="16dp"
             android:textSize="16sp"
             android:text="None" />
@@ -59,6 +60,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
+            android:background="@drawable/back"
             android:text="None" />
     </LinearLayout>
 
@@ -83,6 +85,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
+            android:background="@drawable/back"
             android:text="None" />
     </LinearLayout>
 
@@ -102,7 +105,7 @@
         <TextView
             android:id="@+id/user_upiid"
             android:textStyle="bold"
-
+            android:background="@drawable/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
@@ -130,6 +133,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
+            android:background="@drawable/back"
             android:text="None" />
     </LinearLayout>
 
@@ -153,6 +157,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
+            android:background="@drawable/back"
             android:text="None" />
     </LinearLayout>
 
@@ -171,19 +176,19 @@
             android:fontFamily="@font/mainfont"
             android:background="@drawable/mybutton"
             android:textColor="@color/white"
-            android:alpha="0.75"/>
+            android:layout_marginLeft="16dp"/>
 
         <Button
             android:id="@+id/delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="2dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/mybutton"
             android:textColor="@color/white"
             android:text="DELETE ACCOUNT"
             android:fontFamily="@font/mainfont"
-            android:alpha="0.75"/>
+            android:layout_marginRight="16dp" />
 
     </LinearLayout>
 

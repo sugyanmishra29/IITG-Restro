@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileWindows.UserProfileActivity"
@@ -35,18 +35,21 @@
             android:id="@+id/shop_name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="monospace"
             android:padding="16dp"
-            android:textSize="20sp"
-            android:text="@string/user_name" />
+            android:text="@string/user_name"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/shop_name"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:padding="16dp"
+            android:text="None"
             android:textSize="16sp"
-            android:text="None" />
+            android:textStyle="bold"
+            android:background="@drawable/back"/>
     </LinearLayout>
 
 
@@ -59,9 +62,10 @@
             android:id="@+id/shop_email_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="monospace"
             android:padding="16dp"
-            android:textSize="20sp"
-            android:text="@string/user_email" />
+            android:text="@string/user_email"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/shop_email"
@@ -70,7 +74,8 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
-            android:text="None" />
+            android:text="None"
+            android:background="@drawable/back"/>
     </LinearLayout>
 
     <LinearLayout
@@ -82,9 +87,10 @@
             android:id="@+id/shop_password_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="monospace"
             android:padding="16dp"
-            android:textSize="20sp"
-            android:text="@string/user_password" />
+            android:text="@string/user_password"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/shop_password"
@@ -94,7 +100,8 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
-            android:text="None" />
+            android:text="None"
+            android:background="@drawable/back"/>
     </LinearLayout>
 
     <LinearLayout
@@ -106,14 +113,15 @@
             android:id="@+id/shop_upiid_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="monospace"
             android:padding="16dp"
-            android:textSize="20sp"
-            android:text="@string/shop_upiid" />
+            android:text="UPI ID:"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/shop_upiid"
             android:textStyle="bold"
-
+            android:background="@drawable/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
@@ -132,6 +140,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="20sp"
+            android:fontFamily="monospace"
             android:text="@string/user_number" />
 
         <TextView
@@ -141,7 +150,8 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
-            android:text="None" />
+            android:text="None"
+            android:background="@drawable/back"/>
     </LinearLayout>
 
     <LinearLayout
@@ -155,6 +165,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="20sp"
+            android:fontFamily="monospace"
             android:text="@string/user_address" />
 
         <TextView
@@ -164,12 +175,14 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="16sp"
-            android:text="None" />
+            android:text="None"
+            android:background="@drawable/back"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:fontFamily="monospace"
         android:text="@string/description"
         android:textSize="20sp" />
 
@@ -186,6 +199,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:fontFamily="monospace"
         android:text="@string/about"
         android:textSize="20sp" />
 

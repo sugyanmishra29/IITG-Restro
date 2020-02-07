@@ -38,7 +38,8 @@
         android:textSize="28sp"
         android:textColor="@color/white"
         android:background="@drawable/mybutton"
-        android:alpha="0.75"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:text="SIGN UP"
         android:fontFamily="@font/mainfont"
         android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
@@ -55,7 +56,8 @@
         android:fontFamily="@font/mainfont"
         android:textColor="@color/white"
         android:background="@drawable/mybutton"
-        android:alpha="0.75"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
 </RelativeLayout>

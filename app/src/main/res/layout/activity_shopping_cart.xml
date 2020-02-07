@@ -25,7 +25,6 @@
         android:text="Order"
         android:textSize="25sp"
         android:textColor="@color/white"
-        android:alpha="0.75"
         android:background="@drawable/mybutton"/>
 
     <LinearLayout

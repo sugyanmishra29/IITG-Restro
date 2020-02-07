@@ -33,6 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
+                    android:fontFamily="monospace"
                     android:text="@string/shop_name"
                     android:textSize="20sp" />
 
@@ -43,6 +44,7 @@
                     android:padding="16dp"
                     android:text="None"
                     android:textSize="16sp"
+                    android:background="@drawable/back"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -56,6 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
+                    android:fontFamily="monospace"
                     android:text="@string/user_number"
                     android:textSize="20sp" />
 
@@ -65,6 +68,7 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:text="None"
+                    android:background="@drawable/back"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -80,6 +84,7 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:text="@string/user_address"
+                    android:fontFamily="monospace"
                     android:textSize="20sp" />
 
                 <TextView
@@ -88,6 +93,7 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:text="None"
+                    android:background="@drawable/back"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -97,7 +103,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/description"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:fontFamily="monospace"/>
 
             <TextView
                 android:id="@+id/description_view"
@@ -113,6 +120,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/about"
+                android:fontFamily="monospace"
                 android:textSize="20sp" />
 
             <TextView

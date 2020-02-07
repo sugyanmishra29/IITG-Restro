@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textSize="18sp"
+                android:fontFamily="monospace"
                 android:text="@string/user_name" />
 
             <TextView
@@ -69,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textSize="18sp"
+                android:fontFamily="monospace"
                 android:text="@string/user_number" />
 
             <TextView
@@ -91,7 +93,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textSize="18sp"
-                android:text="@string/user_address" />
+                android:text="@string/user_address"
+                android:fontFamily="monospace"/>
 
             <TextView
                 android:id="@+id/oi_user_address"
@@ -116,7 +119,8 @@
                 android:text="Accept"
                 android:background="@drawable/mybutton"
                 android:textColor="@color/white"
-                android:alpha="0.75"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:fontFamily="@font/mainfont"/>
 
             <Button
@@ -128,7 +132,7 @@
                 android:background="@drawable/mybutton"
                 android:textColor="@color/white"
                 android:text="Decline"
-                android:alpha="0.75"
+                android:layout_marginRight="16dp"
                 android:fontFamily="@font/mainfont"/>
         </LinearLayout>
     </LinearLayout>
