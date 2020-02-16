@@ -57,7 +57,7 @@
                 android:textSize="14sp"
                 android:gravity="top"
                 android:textColor="@color/button_pink"
-                tools:text="300 Rs/-" />
+                tools:text="₹ 300/-" />
 
         </LinearLayout>
 

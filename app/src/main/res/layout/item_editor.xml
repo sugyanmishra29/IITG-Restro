@@ -94,20 +94,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    android:text=" ₹ "
+                    android:textSize="24dp" />
+
                 <EditText
                     android:id="@+id/item_price_edit_view"
                     android:layout_width="123dp"
                     android:layout_height="wrap_content"
                     android:inputType="number" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="31dp"
-                    android:layout_gravity="bottom"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center"
-                    android:text="RS/-"
-                    android:textSize="16dp" />
             </LinearLayout>
 
         </LinearLayout>

@@ -81,7 +81,7 @@
                 android:layout_alignParentEnd="true"
                 android:gravity="bottom"
                 android:textColor="@color/button_pink"
-                tools:text="300 Rs/-" />
+                tools:text="₹ 300/-" />
 
             <TextView
                 android:id="@+id/invisible_item_id_view"

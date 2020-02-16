@@ -35,7 +35,7 @@
                 android:padding="16dp"
                 android:textAlignment="center"
                 android:text="You have to return back the money to the customer. Continue?"
-                android:textSize="32sp" />
+                android:textSize="32sp"/>
 
         </LinearLayout>
 
@@ -43,18 +43,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
 
             <Button
                 android:id="@+id/yes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:alpha="0.75"
                 android:background="@drawable/mybutton"
                 android:fontFamily="@font/mainfont"
                 android:text="Yes"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:layout_marginRight="8dp"/>
 
             <Button
                 android:id="@+id/no"
@@ -62,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:alpha="0.75"
                 android:background="@drawable/mybutton"
                 android:fontFamily="@font/mainfont"
                 android:text="No"

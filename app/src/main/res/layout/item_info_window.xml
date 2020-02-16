@@ -155,7 +155,7 @@
     <Button
         android:id="@+id/orderButton"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="42dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/mybutton"
         android:layout_marginLeft="16dp"
@@ -163,6 +163,6 @@
         android:text="ORDER"
         android:fontFamily="@font/mainfont"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginBottom="8dp"/>
 </RelativeLayout>

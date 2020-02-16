@@ -170,7 +170,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/button_pink"
         android:textAlignment="center"
-        android:text="Sign"
+        android:text="Sign In"
         android:textStyle="bold"
         android:layout_alignParentBottom="true"
         android:fontFamily="@font/mainfont"/>

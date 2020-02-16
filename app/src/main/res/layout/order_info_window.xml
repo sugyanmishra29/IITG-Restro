@@ -117,6 +117,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="Accept"
+                android:textSize="16sp"
                 android:background="@drawable/mybutton"
                 android:textColor="@color/white"
                 android:layout_marginLeft="16dp"
@@ -132,6 +133,7 @@
                 android:background="@drawable/mybutton"
                 android:textColor="@color/white"
                 android:text="Decline"
+                android:textSize="16sp"
                 android:layout_marginRight="16dp"
                 android:fontFamily="@font/mainfont"/>
         </LinearLayout>
