@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical">
 
     <ScrollView
@@ -55,6 +54,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:text="None"
+                    android:textColor="@color/grey"
                     android:theme="@style/menuOrderInfo" />
             </LinearLayout>
 
@@ -72,33 +72,21 @@
                     android:fontFamily="monospace"/>
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="3dp"
+                    android:text="₹"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp" />
+
+                <TextView
                     android:id="@+id/oItemPriceView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:text="None"
+                    android:textColor="@color/grey"
                     android:theme="@style/menuOrderInfo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="3dp"
-                    android:gravity="bottom"
-                    android:paddingBottom="5dp"
-                    android:text="Rs/-"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/oExtraInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Fries and Drinks included"
-                    android:textColor="@color/white"
-                    android:paddingBottom="5dp"
-                    android:gravity="bottom"
-                    android:textAlignment="textEnd" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -121,7 +109,7 @@
                     android:layout_marginLeft="10dp"
                     android:text="None"
                     android:theme="@style/menuOrderInfo"
-
+                    android:textColor="@color/grey"
                     />
             </LinearLayout>
 
@@ -146,6 +134,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:text="None"
+                    android:textColor="@color/grey"
                     android:theme="@style/menuOrderInfo" />
 
             </LinearLayout>
@@ -164,5 +153,6 @@
         android:fontFamily="@font/mainfont"
         android:textColor="@color/white"
         android:textSize="16sp"
-        android:layout_marginBottom="8dp"/>
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
 </RelativeLayout>
