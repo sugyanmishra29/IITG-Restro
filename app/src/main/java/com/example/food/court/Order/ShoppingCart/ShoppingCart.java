@@ -159,6 +159,8 @@ public static Context context;
                     });
                     if(shopName!=null && shopUpiId!=null && note!=null)
                     {
+                        // for bypassing this payment you comment this line and uncomment the next paragraph
+
                         payUsingUpi(shopName,shopUpiId,note,String.valueOf(totalPrice));
                         items=allItems;
                     }
