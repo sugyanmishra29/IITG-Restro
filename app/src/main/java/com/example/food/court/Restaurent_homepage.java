@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food.court.Menu.ShopMenuActivity;
+import com.example.food.court.Notifications.Token;
 import com.example.food.court.Order.OrdersTerminalActivity;
 import com.example.food.court.ProfileWindows.ShopProfileActivity;
 import com.example.food.court.ProfileWindows.UserProfileActivity;
@@ -39,6 +40,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 public class Restaurent_homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -128,7 +130,21 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
 
 
         Log.i(TAG, "onCreate: shopid :"+cuser.getUid());
+
         DatabaseReference m=FirebaseDatabase.getInstance().getReference().child("Restaurents").child(cuser.getUid()).child("Info");
+        m.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                updateToken(FirebaseInstanceId.getInstance().getToken());
+                // sendOnChannel1();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         m.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -173,6 +189,15 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
                     new MessageFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_message);
         }*/
+    }
+
+    private  void  updateToken(String token)
+    {
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1=new Token(token);
+        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+        reference.child(user.getUid()).setValue(token1);
+
     }
 
     @Override
@@ -222,8 +247,12 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
                         FirebaseDatabase.getInstance().getReference().child("Restaurents").child(cuser.getUid()).child("Token").setValue(null);
 
                         FirebaseAuth.getInstance().signOut();
-                        finish();
+
+                        Intent i2 = new Intent(Restaurent_homepage.this, MainActivity.class);
                         Toast.makeText(Restaurent_homepage.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(i2);
+                        finish();
+
                     }
                 });
                 abuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -239,6 +268,8 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     @Override
     public void onBackPressed() {

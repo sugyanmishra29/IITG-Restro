@@ -88,7 +88,7 @@ public class User {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.getValue(User.class);
                 Log.i(TAG, "onDataChange: userid : "+userId);
-            currentUser.setCurrentValues(userId);
+                currentUser.setCurrentValues(userId);
             }
 
             @Override

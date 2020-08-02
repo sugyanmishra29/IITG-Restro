@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.food.court.HomeActivity;
-import com.example.food.court.MainActivity;
 import com.example.food.court.R;
 
 public class WelcomeScreenActivity extends AppCompatActivity {
@@ -34,7 +32,6 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 Log.i(TAG, "onClick: before intent");
                 startActivity(sign_up_intent);
                 Log.i(TAG, "onClick: after intent");
-                finish();
             }
         });
 
@@ -45,8 +42,6 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 sign_in_intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 sign_in_intent.putExtra("mode", "log_in");
                 startActivity(sign_in_intent);
-                finish();
-
             }
         });
     }

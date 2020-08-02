@@ -70,7 +70,7 @@ public class ShoppingCart extends AppCompatActivity {
     private int totalPrice;
     private String Token;
     private FloatingActionButton floatingButton;
-public static Context context;
+    public static Context context;
     private ItemAdapter adapter;
     RecyclerView recyclerView;
     ArrayList<ShoppingCartItem> items = new ArrayList<>();
@@ -101,7 +101,7 @@ public static Context context;
 
         readReference = FirebaseDatabase.getInstance().getReference("Users/" + UserInfo.userID + "/shoppingCart");
         orderButton = findViewById(R.id.finalOrderButton);
-       // listView = findViewById(R.id.sItemsList);
+        // listView = findViewById(R.id.sItemsList);
         totalPriceView = findViewById(R.id.soTotalPrice);
         labelView = findViewById(R.id.sLabelView);
         floatingButton = findViewById(R.id.addButton);
@@ -110,7 +110,7 @@ public static Context context;
         floatingButton.setVisibility(View.VISIBLE);
         emptyView = findViewById(R.id.sEmptyView);
         allItems = new ArrayList<ShoppingCartItem>();
-     //   listView.setEmptyView(emptyView);
+        //   listView.setEmptyView(emptyView);
         orderButton.setVisibility(View.GONE);
         orderButton.setBackgroundColor(getResources().getColor(R.color.grey));
 
@@ -139,7 +139,6 @@ public static Context context;
             public void onClick(View view) {
                 if (ApplicationMode.checkConnectivity(ShoppingCart.this)) {
                     // only allow order if internet is available
-                    sendNotification(ShopID);
 
                     FirebaseDatabase.getInstance().getReference().child("Restaurents").child(ShopID).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -149,6 +148,50 @@ public static Context context;
                                 shopName=dataSnapshot.child("shopName").getValue(String.class);
                                 shopUpiId=dataSnapshot.child("shopUpiId").getValue(String.class);
                                 note="Ordering from this shop.";
+
+                                if(shopName!=null && shopUpiId!=null && note!=null)
+                                {
+                                    //**************************//
+
+                                    readReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            //readReference.keepSynced(true);
+
+                                            items.clear();
+                                            totalPrice=0;
+                                            for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                                if(dataSnapshot1.exists()) {
+                                                    Log.i(TAG, "onOrder: itemkey :" + dataSnapshot1.getKey());
+                                                    orderButton.setBackgroundColor(getResources().getColor(R.color.button_pink));
+                                                    Log.i(TAG, "onOrder: itemprice :" + dataSnapshot1.child("price").getValue());
+                                                    Log.i(TAG, "onOrder: itemquantity" + dataSnapshot1.child("quantity").getValue());
+                                                    // Log.i(TAG, "onChildAdded: s:"+s);
+                                                    ShoppingCartItem item = dataSnapshot1.getValue(ShoppingCartItem.class);
+                                                    Log.i(TAG, "onOrder: itemquantity :" + item.getQuantity());
+                                                    Log.i(TAG, "onOrder: itemprice :" + item.getPrice());
+                                                    // keeps updating total price on each addition of item
+                                                    totalPrice += Integer.parseInt(item.getQuantity()) * Integer.parseInt(item.getPrice());
+                                                    totalPriceView.setText("Total= " + String.valueOf(totalPrice) + "Rs/-");
+                                                    // adds new item to ShoppingCartItem array
+                                                    items.add(item);
+                                                    item.itemDatabaseKey = dataSnapshot1.getKey();
+                                                }
+                                            }
+                                            Log.i(TAG, "upiPaymentDataOperation: items: "+items.size());
+                                            payUsingUpi(shopName,shopUpiId,note,String.valueOf(totalPrice));
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    //**************************//
+
+
+                                }
                             }
                         }
 
@@ -157,13 +200,6 @@ public static Context context;
                             Toast.makeText(getApplicationContext(), "Something went wrong.", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    if(shopName!=null && shopUpiId!=null && note!=null)
-                    {
-                        // for bypassing this payment you comment this line and uncomment the next paragraph
-
-                        payUsingUpi(shopName,shopUpiId,note,String.valueOf(totalPrice));
-                        items=allItems;
-                    }
                    /* final Order order = new Order(allItems, UserInfo.userID,ShopID, String.valueOf(totalPrice));
                     //writeReference2.push().setValue(order);
                     String key=writeReference1.push().getKey();
@@ -176,21 +212,17 @@ public static Context context;
                                     @Override
                                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                                         if (databaseError == null) {
-
                                             // clears view
                                             items.clear();
                                             labelView.setVisibility(View.GONE);
-
                                         }
                                     }
                                 });
-
                                 Toast.makeText(getApplicationContext(), "Your Order Has been placed", Toast.LENGTH_SHORT).show();
                             } else {
                             }
                         }
                     });
-
                     */
 
                 } else {
@@ -201,7 +233,7 @@ public static Context context;
 
 
     }
-    private  void sendNotification(String shopid){
+    private  void sendNotification(final String shopid){
         DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Restaurents").child(shopid).child("Token");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -209,6 +241,35 @@ public static Context context;
                 if(dataSnapshot.exists())
                 {
                     Token=dataSnapshot.getValue(String.class);
+                    Log.i(TAG,"shopid:"+shopid);
+                    Log.i(TAG,"Token:"+Token);
+
+                    if(Token!=null) {
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://foudserver.firebaseapp.com/api/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        Api api = retrofit.create(Api.class);
+
+                        Call<ResponseBody> call = api.sendNotification(Token," Restaurents", "Order Received .");
+
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
+                                    Toast.makeText(ShoppingCart.this, response.body().string(), Toast.LENGTH_LONG).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             }
 
@@ -217,32 +278,7 @@ public static Context context;
 
             }
         });
-        if(Token!=null) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://foudserver.firebaseapp.com/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
 
-            Api api = retrofit.create(Api.class);
-
-            Call<ResponseBody> call = api.sendNotification(Token," Restaurents", "Order Received .");
-
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    try {
-                        Toast.makeText(ShoppingCart.this, response.body().string(), Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
-        }
 
     }
 
@@ -330,6 +366,7 @@ public static Context context;
                     paymentCancel = "Payment cancelled by user.";
                 }
             }
+            status="success";
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 Log.i(TAG, "upiPaymentDataOperation: allitems: "+allItems.size());
@@ -352,6 +389,7 @@ public static Context context;
                                         editor.putBoolean("Cart",true).apply();
                                         labelView.setVisibility(View.GONE);
 
+                                        sendNotification(ShopID);
                                     }
                                 }
                             });
@@ -363,7 +401,7 @@ public static Context context;
                 });
                 //sendNotification(ShopID);
 
-               // Toast.makeText(getApplicationContext(), "Transaction successful.", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(), "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.e("UPI", "payment successfull: "+approvalRefNo);
             }
             else if("Payment cancelled by user.".equals(paymentCancel)) {

@@ -97,12 +97,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pref = getSharedPreferences(PREFS_NAME,MODE_PRIVATE);
         final String typeing=pref.getString("Type","");
         Log.i(TAG, "onCreate: started2");
-       /* mDescription = findViewById(R.id.mDescription);
-        mAbout = findViewById(R.id.mAbout);
-        mPhone = findViewById(R.id.mPhoneNumber);
-        mAddress = findViewById(R.id.mAddress);
-        mButton = findViewById(R.id.mCallButton);
-        viewMenuButton = findViewById(R.id.mViewMenuButton);*/
         FirebaseMessaging.getInstance().subscribeToTopic("updates");
         mAuthentication = FirebaseAuth.getInstance();
         current_user = mAuthentication.getCurrentUser();
@@ -138,13 +132,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if(typeing.equals("R"))
                     {
                         Intent ni=new Intent(MainActivity.this,Restaurent_homepage.class);
+                        ni.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         ni.putExtra("U_ID",user.getUid());
                         startActivity(ni);
                     }
                     if(typeing.equals("U"))
 
                         {
-                        User.loadCurrentUser(user.getUid());
+                            User.loadCurrentUser(user.getUid());
                             FirebaseUser cuser=FirebaseAuth.getInstance().getCurrentUser();
 
 
@@ -189,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             }*/
                     }
-
                     Log.i(TAG, "onAuthStateChanged: sdkmksf"+typeing+"9m");
                     Log.i(TAG, "onAuthStateChanged: "+user.getUid());
 
@@ -198,8 +192,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     progressDialog.hide();
                     progressDialog.dismiss();
                     Intent i2 = new Intent(MainActivity.this, Start_page.class);
-                    i2.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    //i2.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivityForResult(i2, RC_SIGN_IN);
+
+                    //finish this activity it is nod needed now
+                    finish();
                 }
             }
         };
@@ -229,88 +226,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationManager.notify(1, notification);
     }
 
-/*
-    private void inquiryDialog() {
-        //dialog to verify owner
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Are You a owner?");
-        dialog.setMessage("Please enter password to verify, or proceed as a visitor");
-        final EditText input = new EditText(this);
-        dialog.setView(input);
-        dialog.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface mdialog, int which) {
-
-                if (input.getText().toString().trim().equals(BuildConfig.FLAVOR)) {
-                    ApplicationMode.currentMode = "owner";
-                    Intent i = new Intent(getApplicationContext(), ShopHomeActivity.class);
-                    startActivity(i);
-                } else {
-
-                    Toast.makeText(getApplicationContext(), "Incorrect Password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        dialog.setNeutralButton("Proceed anyway", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ApplicationMode.currentMode = "visitor";
-                Intent i2 = new Intent(getApplicationContext(), ShopHomeActivity.class);
-                startActivity(i2);
-            }
-        });
-        dialog.create();
-        dialog.show();
-    }
-*/
-    /*private void loadShop() {
-
-        final DatabaseReference mReference = FirebaseDatabase.getInstance().getReference("/shopInfo");
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    Shop shop = dataSnapshot.getValue(Shop.class);
-                    setCurrentShopProfile(shop);
-                    updateUI();
-                    progressDialog.hide();
-                    progressDialog.dismiss();
-                }
-                else
-                {
-                    Shop shop=new Shop("name","number","address","description","about");
-                    setCurrentShopProfile(shop);
-                    mReference.setValue(shop);
-                    updateUI();
-                    progressDialog.hide();
-                    progressDialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.i(TAG, "Error loading shop data");
-            }
-        });
-
-    private void setCurrentShopProfile(Shop shop) {
-        ShopInfo.setShopName(shop.getShopName());
-        ShopInfo.setShopNumber(shop.getShopNumber());
-        ShopInfo.setShopAddress(shop.getShopAddress());
-        ShopInfo.setShopDescription(shop.getShopDescription());
-        ShopInfo.setShopAbout(shop.getShopAbout());
-
-    }    }
-
-
-    private void updateUI() {
-        Log.i(TAG, "Shop Info" + ShopInfo.shopName);
-        mPhone.setText(ShopInfo.shopNumber);
-        mAddress.setText(ShopInfo.shopAddress);
-        mDescription.setText(ShopInfo.shopDescription);
-        mAbout.setText(ShopInfo.shopAbout);
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -358,40 +273,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /*
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.main_menu, menu);
-            return true;
-        }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.profile_option:
-                    Intent profileIntent = new Intent(getApplicationContext(), UserProfileActivity.class);
-                    startActivity(profileIntent);
-                    return true;
-                case R.id.shop_option:
-                    inquiryDialog();
-                    return true;
-                case R.id.shoppingCart:
-                    Intent shoppingCartIntent = new Intent(getApplicationContext(), ShoppingCart.class);
-                    startActivity(shoppingCartIntent);
-                    return true;
-                case R.id.myOrders:
-                    ApplicationMode.ordersViewer = "customer";
-                    Intent myOrders = new Intent(getApplicationContext(), OrdersTerminalActivity.class);
-                    startActivity(myOrders);
-                    return true;
-
-                default:
-                    return super.onOptionsItemSelected(item);
-            }
-        }
-
-     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

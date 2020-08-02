@@ -342,7 +342,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 i.putExtra("USER_ID", user.getUid());
                                                 i.putExtra("USER",USER);
                                                 startActivity(i);
-                                                finish();
+                                                finishAffinity();
                                             }
                                         }
 

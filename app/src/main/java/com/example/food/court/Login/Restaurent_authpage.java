@@ -34,7 +34,6 @@ public class Restaurent_authpage extends AppCompatActivity {
                 Log.i(TAG, "onClick: before intent");
                 startActivity(sign_up_intent);
                 Log.i(TAG, "onClick: after intent");
-                finish();
             }
         });
 
@@ -45,7 +44,6 @@ public class Restaurent_authpage extends AppCompatActivity {
                 sign_in_intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 sign_in_intent.putExtra("mode", "log_in");
                 startActivity(sign_in_intent);
-                finish();
 
             }
         });
