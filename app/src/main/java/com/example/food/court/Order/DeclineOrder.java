@@ -76,28 +76,28 @@ public class DeclineOrder extends AppCompatActivity {
             body="Sorry!Restaurent has to cancel your delivery due to unavoidable reason. But you didn't lost money.";
         }
 
-        FirebaseDatabase.getInstance().getReference().child("Users").child(userid).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists())
-                {
-                    userName=dataSnapshot.child("userName").getValue(String.class);
-                    userUpiId=dataSnapshot.child("userUpiId").getValue(String.class);
-                   // note="Returning the money.";
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    linearLayout.setVisibility(View.GONE);
-                payUsingUpi(userName,userUpiId,note,totalPrice);
+                FirebaseDatabase.getInstance().getReference().child("Users").child(userid).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists())
+                        {
+                            userName=dataSnapshot.child("userName").getValue(String.class);
+                            userUpiId=dataSnapshot.child("userUpiId").getValue(String.class);
+                            linearLayout.setVisibility(View.GONE);
+                            payUsingUpi(userName,userUpiId,note,totalPrice);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         no.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +109,8 @@ public class DeclineOrder extends AppCompatActivity {
     }
 
     private  void sendNotification(String userId,String title,String body){
+        final String mtitle=title;
+        final String mbody=body;
         DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Token");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -116,6 +118,32 @@ public class DeclineOrder extends AppCompatActivity {
                 if(dataSnapshot.exists())
                 {
                     Token=dataSnapshot.getValue(String.class);
+                    if(Token!=null) {
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://foudserver.firebaseapp.com/api/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        Api api = retrofit.create(Api.class);
+
+                        Call<ResponseBody> call = api.sendNotification(Token,mtitle,mbody);
+
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
+                                    Toast.makeText(DeclineOrder.this, response.body().string(), Toast.LENGTH_LONG).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             }
 
@@ -124,37 +152,12 @@ public class DeclineOrder extends AppCompatActivity {
 
             }
         });
-        if(Token!=null) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://foudserver.firebaseapp.com/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
 
-            Api api = retrofit.create(Api.class);
-
-            Call<ResponseBody> call = api.sendNotification(Token,title, body);
-
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    try {
-                        Toast.makeText(DeclineOrder.this, response.body().string(), Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
-        }
 
     }
 
 
-    void payUsingUpi(  String name,String upiId, String note, String amount) {
+    void payUsingUpi(String name,String upiId, String note, String amount) {
         Log.e("main ", "name "+name +"--up--"+upiId+"--"+ note+"--"+amount);
         Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", upiId)
@@ -238,22 +241,24 @@ public class DeclineOrder extends AppCompatActivity {
                     paymentCancel = "Payment cancelled by user.";
                 }
             }
+            // to bypass the payment verification uncomment the next line
+            status="success";
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 fromuser.removeValue(new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 
+                        fromshop.removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                Toast.makeText(getApplicationContext(),"Order Cancelled!",Toast.LENGTH_SHORT).show();
+                                sendNotification(userid,title,body);
+                            }
+                        });
 
                     }
                 });
-                fromshop.removeValue(new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-
-                    }
-                });
-                sendNotification(userid,title,body);
 
                 // Toast.makeText(getApplicationContext(), "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.e("UPI", "payment successfull: "+approvalRefNo);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -138,6 +139,9 @@ public class OrderInfoDialog extends Dialog {
                     toReferenceshop = FirebaseDatabase.getInstance().getReference().child("Restaurents").child(cuser.getUid()).child("/orders/delivering");
                     positiveToastMessage = "Order Accepted";
                     negativeToastMessage = "Order Declined";
+
+                    Log.i(TAG, fromReferenceuser.toString() + "   " + toReferenceuser.toString());
+                    Log.i(TAG, fromReferenceshop.toString() + "   " + toReferenceshop.toString());
                 } else {
                     fromReference=FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("orders/pending/"+orderId);
                     fromReferenceuser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("orders/pending/" + orderId);
@@ -194,7 +198,7 @@ public class OrderInfoDialog extends Dialog {
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ApplicationMode.currentMode.equals("owner") || ApplicationMode.currentMode.equals("customer")) {
+                if (ApplicationMode.currentMode.equals("owner")) {
                     moveFirebaseRecord();
 
                 } else {
@@ -237,7 +241,7 @@ public class OrderInfoDialog extends Dialog {
                     if(ApplicationMode.orderStatus.equals("pending") || ApplicationMode.orderStatus.equals("delivering"))
                     {
 
-
+                            note="Returning money to the user!";
                             Intent i=new Intent(applicationContext, DeclineOrder.class);
                             i.putExtra("shopid",shopid);
                             i.putExtra("userid",userId);
@@ -284,35 +288,54 @@ public class OrderInfoDialog extends Dialog {
 
 
     public void moveFirebaseRecord() {
-        Log.i(TAG, fromReferenceuser.toString() + "   " + toReferenceuser.toString());
-        fromReferenceuser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                toReferenceuser.child( orderId).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        fromReferenceuser.removeValue();
-                        Toast.makeText(getContext(), positiveToastMessage, Toast.LENGTH_SHORT).show();
-                        dismiss();
-                    }
-                });
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.i(TAG, databaseError.toString());
-            }
-        });
+        Log.i(TAG, fromReferenceuser.toString() + "   " + toReferenceuser.toString());
         Log.i(TAG, fromReferenceshop.toString() + "   " + toReferenceshop.toString());
         fromReferenceshop.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                toReferenceshop.child( orderId).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                Log.i(TAG,"datasnapsot : "+dataSnapshot.getValue());
+                if(dataSnapshot.getValue()!=null)
+                    toReferenceuser.child( orderId).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        fromReferenceshop.removeValue();
-                       // Toast.makeText(getContext(), positiveToastMessage, Toast.LENGTH_SHORT).show();
-                        dismiss();
+                        fromReferenceuser.removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                /////////////////////
+
+                                fromReferenceshop.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        toReferenceshop.child( orderId).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                                fromReferenceshop.removeValue(new DatabaseReference.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+
+                                                        Toast.makeText(getContext(), positiveToastMessage, Toast.LENGTH_SHORT).show();
+                                                        dismiss();
+                                                        if(ApplicationMode.orderStatus.equals("pending"))
+                                                            body="Your Order is Accepted.";
+                                                        else
+                                                            body="Your Order is Delivered.";
+                                                        sendNotification(userId,title,body);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Log.i(TAG, databaseError.toString());
+                                    }
+                                });
+
+                                ////////////////////
+                            }
+                        });
                     }
                 });
             }
@@ -322,13 +345,11 @@ public class OrderInfoDialog extends Dialog {
                 Log.i(TAG, databaseError.toString());
             }
         });
-        if(ApplicationMode.orderStatus.equals("pending"))
-            body="Your Order is Accepted.";
-        else
-            body="Your Order is Delivered.";
-        sendNotification(userId,title,body);
+
     }
     private  void sendNotification(String userId,String title,String body){
+        final String mtitle=title;
+        final String mbody=body;
         DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Token");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -336,6 +357,32 @@ public class OrderInfoDialog extends Dialog {
                 if(dataSnapshot.exists())
                 {
                     Token=dataSnapshot.getValue(String.class);
+                    if(Token!=null) {
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://foudserver.firebaseapp.com/api/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        Api api = retrofit.create(Api.class);
+
+                        Call<ResponseBody> call = api.sendNotification(Token,mtitle, mbody);
+
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
+                                    Toast.makeText(mcontext, response.body().string(), Toast.LENGTH_LONG).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             }
 
@@ -344,32 +391,7 @@ public class OrderInfoDialog extends Dialog {
 
             }
         });
-        if(Token!=null) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://foudserver.firebaseapp.com/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
 
-            Api api = retrofit.create(Api.class);
-
-            Call<ResponseBody> call = api.sendNotification(Token,title, body);
-
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    try {
-                        Toast.makeText(mcontext, response.body().string(), Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
-        }
 
     }
 
