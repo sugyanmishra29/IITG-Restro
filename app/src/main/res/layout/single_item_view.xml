@@ -8,21 +8,21 @@
     android:layout_margin="4dp"
     card_view:cardBackgroundColor="#B4B3B3"
     card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="6dp">
+    card_view:cardElevation="8dp">
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="match_parent"
         android:minHeight="@dimen/list_item_height"
+        android:background="#D0CCF8"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="@dimen/list_item_height"
-            android:layout_height="match_parent"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_height="88dp"
+            android:layout_margin="8dp"
             android:background="@drawable/my_border_2">
 
             <ImageView
@@ -44,9 +44,9 @@
             android:id="@+id/text_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#B4B3B3"
+            android:background="#E9EBF8"
             android:orientation="vertical"
-            android:paddingLeft="5dp">
+            >
 
             <TextView
                 android:id="@+id/item_name_view"
@@ -54,9 +54,10 @@
                 android:layout_height="44dp"
                 android:layout_weight="1"
                 android:gravity="bottom"
+                android:layout_marginLeft="8dp"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/button_pink"
-                android:textSize="16sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 tools:text="Name"
                 />
@@ -67,20 +68,24 @@
                 android:layout_height="44dp"
                 android:layout_below="@id/item_name_view"
                 android:layout_weight="1"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="12dp"
                 android:gravity="top"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/button_pink"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 tools:text="Description" />
 
             <TextView
                 android:id="@+id/item_price_view"
                 android:layout_width="wrap_content"
                 android:layout_height="43dp"
+                android:layout_marginRight="10dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:gravity="bottom"
                 android:textColor="@color/button_pink"
+                android:textSize="16sp"
                 tools:text="₹ 300/-" />
 
             <TextView

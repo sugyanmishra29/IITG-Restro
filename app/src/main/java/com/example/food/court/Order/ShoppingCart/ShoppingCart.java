@@ -366,7 +366,8 @@ public class ShoppingCart extends AppCompatActivity {
                     paymentCancel = "Payment cancelled by user.";
                 }
             }
-            status="success";
+            // to bypass the payment verification uncomment the next line
+            //status="success";
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 Log.i(TAG, "upiPaymentDataOperation: allitems: "+allItems.size());

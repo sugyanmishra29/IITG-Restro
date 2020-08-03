@@ -8,21 +8,24 @@
     android:layout_margin="4dp"
     card_view:cardBackgroundColor="#B4B3B3"
     card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="6dp"
+    card_view:cardElevation="8dp"
     >
+
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
-    android:minHeight="@dimen/list_item_height">
+    android:layout_height="match_parent"
+    android:minHeight="@dimen/list_item_height"
+    android:background="#E9EBF8">
+
+
 
     <RelativeLayout
-        android:background="#B4B3B3"
+        android:background="#CCDFE9"
         android:id="@+id/sTextContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="10dp">
-
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -33,15 +36,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Order Id : "
-                    android:gravity="bottom"
-                    android:textSize="16sp"
-                    android:fontFamily="monospace"
+                    android:layout_marginTop="10dp"
+                    android:textSize="20sp"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -49,7 +52,7 @@
                     android:id="@+id/soOrderID"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="bottom"
+                    android:layout_marginTop="13dp"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -62,7 +65,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -70,7 +74,7 @@
                     android:text="UserId: "
                     android:fontFamily="monospace"
                     android:gravity="top"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:textStyle="italic"
                     android:textColor="@color/black" />
 
@@ -79,6 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="top"
+                    android:layout_marginTop="4dp"
                     android:textSize="12sp"
                     android:textStyle="italic"
                     android:textAppearance="?android:textAppearanceMedium"
@@ -94,12 +99,11 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="1dp"
             android:gravity="bottom"
-            android:fontFamily="monospace"
             android:textColor="@color/black"
             android:text="Total price \n=₹ 3000/-"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
     </RelativeLayout>
 
 </LinearLayout>

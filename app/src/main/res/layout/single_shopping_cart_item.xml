@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="4dp"
-    card_view:cardBackgroundColor="#B4B3B3"
+    card_view:cardBackgroundColor="#CCDFE9"
     card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="6dp">
+    card_view:cardElevation="8dp">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
@@ -16,7 +16,7 @@
     android:minHeight="@dimen/list_item_height">
 
     <RelativeLayout
-        android:background="#B4B3B3"
+        android:background="#CCDFE9"
         android:id="@+id/sTextContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

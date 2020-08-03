@@ -247,7 +247,7 @@ public class Restaurent_homepage extends AppCompatActivity implements Navigation
                         FirebaseDatabase.getInstance().getReference().child("Restaurents").child(cuser.getUid()).child("Token").setValue(null);
 
                         FirebaseAuth.getInstance().signOut();
-
+                        //MainActivity.refresh=false;
                         Intent i2 = new Intent(Restaurent_homepage.this, MainActivity.class);
                         Toast.makeText(Restaurent_homepage.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
                         startActivity(i2);

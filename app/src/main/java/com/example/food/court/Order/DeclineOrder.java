@@ -242,7 +242,7 @@ public class DeclineOrder extends AppCompatActivity {
                 }
             }
             // to bypass the payment verification uncomment the next line
-            status="success";
+            //status="success";
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 fromuser.removeValue(new DatabaseReference.CompletionListener() {

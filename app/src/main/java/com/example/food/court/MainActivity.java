@@ -22,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,11 +30,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.example.food.court.Login.WelcomeScreenActivity;
 import com.example.food.court.Menu.ShopMenuActivity;
 import com.example.food.court.Notifications.Token;
@@ -65,9 +70,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "Main Activity";
     static boolean calledAlready = false;
-
+    static boolean refresh=false;
     //UI instances
 
+    private ImageView gif;
     //instance declarations
     private FirebaseAuth mAuthentication;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -79,13 +85,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences pref; //sp-the name of shared preferences has to be the same in both the files
     SharedPreferences.Editor editor;//editor-the name of the editor can be different in both the files
     public static final String PREFS_NAME = "MyPrefsFile";
-
+    private Activity mainactivity;
     private DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         contactapp="+919458773422";
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //////////////////////////////////
+        setContentView(R.layout.activity_main_loading);
+
+        //////////////////////////////////
+
+        mainactivity=this;
+
         notificationManager = NotificationManagerCompat.from(this);
 
         Log.i(TAG, "onCreate: started");
@@ -94,6 +106,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             calledAlready = true;
         }
+
+        if(refresh)
+            gotocorrectAvtivity();
+        else
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                gotocorrectAvtivity();
+            }
+        }, 2500);
+    }
+
+    private void gotocorrectAvtivity()
+    {
+        refresh=true;
         pref = getSharedPreferences(PREFS_NAME,MODE_PRIVATE);
         final String typeing=pref.getString("Type","");
         Log.i(TAG, "onCreate: started2");
@@ -103,31 +130,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i(TAG, "onCreate: started3");
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Loading...");
-        progressDialog.show();
-       // loadShop();
+        //progressDialog.show();
+        // loadShop();
         Log.i(TAG, "onCreate: started4");
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new userhomepage()).commit();
-
-        progressDialog.dismiss();
         //keeps user logged in
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                 user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user != null && user.isEmailVerified()) {
                     if(typeing.equals("R"))
                     {
@@ -138,40 +151,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     if(typeing.equals("U"))
 
-                        {
-                            User.loadCurrentUser(user.getUid());
-                            FirebaseUser cuser=FirebaseAuth.getInstance().getCurrentUser();
+                    {
+
+                        setContentView(R.layout.activity_main);
+                        Toolbar toolbar = findViewById(R.id.toolbar);
+                        setSupportActionBar(toolbar);
+
+                        drawer = findViewById(R.id.drawer_layout);
+                        NavigationView navigationView = findViewById(R.id.nav_view);
+                        navigationView.setNavigationItemSelectedListener(MainActivity.this);
+
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(mainactivity, drawer, toolbar,
+                                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                        drawer.addDrawerListener(toggle);
+                        toggle.syncState();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new userhomepage()).commit();
+
+                        progressDialog.dismiss();
+
+                        User.loadCurrentUser(user.getUid());
+                        FirebaseUser cuser=FirebaseAuth.getInstance().getCurrentUser();
 
 
-                            DatabaseReference m=FirebaseDatabase.getInstance().getReference().child("Users").child(cuser.getUid()).child("Info");
-                            m.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    updateToken(FirebaseInstanceId.getInstance().getToken());
-                                       // sendOnChannel1();
-                                }
+                        DatabaseReference m=FirebaseDatabase.getInstance().getReference().child("Users").child(cuser.getUid()).child("Info");
+                        m.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                updateToken(FirebaseInstanceId.getInstance().getToken());
+                                // sendOnChannel1();
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
-                            m.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String mname=dataSnapshot.child("userName").getValue().toString();
-                                    String memail=dataSnapshot.child("userEmail").getValue().toString();
-                                     TextView username=findViewById(R.id.name);
-                                     TextView useremail=findViewById(R.id.email);
-                                    username.setText(mname);
-                                    useremail.setText(memail);
-                                }
+                            }
+                        });
+                        m.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String mname=dataSnapshot.child("userName").getValue().toString();
+                                String memail=dataSnapshot.child("userEmail").getValue().toString();
+                                TextView username=findViewById(R.id.name);
+                                TextView useremail=findViewById(R.id.email);
+                                username.setText(mname);
+                                useremail.setText(memail);
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                            }
+                        });
                            /* Intent intent = new Intent();
                             String packageName = getPackageName();
                             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -187,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i(TAG, "onAuthStateChanged: sdkmksf"+typeing+"9m");
                     Log.i(TAG, "onAuthStateChanged: "+user.getUid());
 
-                } 
+                }
                 else {
                     progressDialog.hide();
                     progressDialog.dismiss();
@@ -201,8 +232,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
 
-
+        mAuthentication.addAuthStateListener(mAuthStateListener);
     }
+
+
     private  void  updateToken(String token)
     {
         DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Tokens");
@@ -259,8 +292,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-      //  viewMenuButton.setEnabled(true);
-        mAuthentication.addAuthStateListener(mAuthStateListener);
+        //  viewMenuButton.setEnabled(true);
+//        if(refresh)
+//            gotocorrectAvtivity();
+//        else
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                gotocorrectAvtivity();
+//            }
+//        }, 4000);
+        //mAuthentication.addAuthStateListener(mAuthStateListener);
         //loadShop();
         ApplicationMode.currentMode = "customer";
     }
@@ -321,8 +363,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Token").setValue(null);
 
                         FirebaseAuth.getInstance().signOut();
-                        finish();
+
+                        Intent i2 = new Intent(MainActivity.this, MainActivity.class);
                         Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(i2);
+                        finish();
                     }
                 });
                 abuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
