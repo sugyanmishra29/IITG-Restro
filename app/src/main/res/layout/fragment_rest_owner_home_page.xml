@@ -40,13 +40,15 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
 
+        android:textAlignment="center"
+        android:text="Please enter a valid Upi Id in Profile Section if not done, otherwise you would not be included in market."
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="17sp"
-        app:layout_constraintTop_toTopOf="@id/textView"
-        android:text="Please enter a valid Upi Id in Profile Section if not done, otherwise you would not be included in market."
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.551"/>
+        app:layout_constraintTop_toTopOf="@id/textView"
+        app:layout_constraintVertical_bias="0.641" />
 </androidx.constraintlayout.widget.ConstraintLayout>

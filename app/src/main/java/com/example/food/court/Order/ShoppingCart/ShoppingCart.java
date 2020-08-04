@@ -258,7 +258,8 @@ public class ShoppingCart extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 try {
-                                    Toast.makeText(ShoppingCart.this, response.body().string(), Toast.LENGTH_LONG).show();
+                                    Log.i(TAG, "onResponse: "+response.body().string());
+                                    //Toast.makeText(ShoppingCart.this, response.body().string(), Toast.LENGTH_LONG).show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

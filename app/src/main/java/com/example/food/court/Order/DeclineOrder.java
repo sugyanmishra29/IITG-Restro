@@ -45,6 +45,7 @@ public class DeclineOrder extends AppCompatActivity {
     DatabaseReference fromuser,fromshop;
     String Token;
     String title;
+    private static final String TAG = "DeclineOrder";
     String body;
     final int UPI_PAYMENT = 0;
     @Override
@@ -132,7 +133,8 @@ public class DeclineOrder extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 try {
-                                    Toast.makeText(DeclineOrder.this, response.body().string(), Toast.LENGTH_LONG).show();
+                                    Log.i(TAG, "onResponse: "+response.body().string());
+                                    //Toast.makeText(DeclineOrder.this, response.body().string(), Toast.LENGTH_LONG).show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

@@ -371,7 +371,8 @@ public class OrderInfoDialog extends Dialog {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 try {
-                                    Toast.makeText(mcontext, response.body().string(), Toast.LENGTH_LONG).show();
+                                    Log.i(TAG, "onResponse: "+response.body().string());
+                                    //Toast.makeText(mcontext, response.body().string(), Toast.LENGTH_LONG).show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

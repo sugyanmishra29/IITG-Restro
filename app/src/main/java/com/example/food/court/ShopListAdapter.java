@@ -79,7 +79,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mcontext,""+holder.shopID,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mcontext,""+holder.shopID,Toast.LENGTH_SHORT).show();
                 final Context applicationContext = ShopList.contextOfApplication;
                 pref= applicationContext.getSharedPreferences(PREFS_NAME,mcontext.MODE_PRIVATE);
                 editor=pref.edit();
@@ -148,7 +148,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
                     });
                     abuilder.show();
                 }
-                Toast.makeText(mcontext,""+holder.shopID,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mcontext,""+holder.shopID,Toast.LENGTH_SHORT).show();
 
                // editor.putString("SHOPID",holder.shopID).apply();
                 //Log.i(TAG, "onClick: shopid: "+pref.getString("SHOPID",""));

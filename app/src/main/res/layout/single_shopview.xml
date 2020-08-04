@@ -69,6 +69,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_alignParentBottom="true"
                 android:gravity="bottom"
+                android:textSize="12sp"
                 android:layout_toRightOf="@id/imageView"
                 android:text="desciption of the shop should be here."
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
